@@ -4,6 +4,7 @@ import { Hero } from "@/components/landing/hero";
 import { ProofStrip } from "@/components/landing/proof-strip";
 import { BentoGrid } from "@/components/landing/bento-grid";
 import { FeatureSteps } from "@/components/landing/feature-steps";
+import { DesktopDownload } from "@/components/landing/desktop-download";
 import { Testimonials } from "@/components/landing/testimonials";
 import { Pricing } from "@/components/landing/pricing";
 import { Faq } from "@/components/landing/faq";
@@ -22,6 +23,7 @@ export default function HomePage() {
       <ProofStrip />
       <BentoGrid />
       <FeatureSteps />
+      <DesktopDownload />
       <InteractiveDemo />
       <Testimonials />
       <Pricing />

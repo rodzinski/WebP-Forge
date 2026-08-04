@@ -17,6 +17,7 @@ export function SiteFooter() {
           <div>
             <strong>Produto</strong>
             <Link href="/app">Conversor</Link>
+            <a href="#windows">Aplicativo Windows</a>
             <a href="#recursos">Recursos</a>
             <a href="#precos">Preços</a>
           </div>
