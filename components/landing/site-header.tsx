@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 
 const navigation = [
@@ -14,7 +14,7 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <Link href="/" className="site-brand" aria-label="WebP Forge — Página inicial">
-        <Image src="/icon.png" alt="" width={34} height={34} priority />
+        <BrandMark size={34} priority />
         <span>WebP Forge</span>
       </Link>
       <nav aria-label="Navegação principal">{navigation.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}</nav>

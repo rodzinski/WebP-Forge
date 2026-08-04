@@ -3,6 +3,7 @@
 import { ChangeEvent, DragEvent, useEffect, useMemo, useRef, useState } from "react";
 import { downloadZip } from "client-zip";
 import Image from "next/image";
+import { BrandMark } from "@/components/brand-mark";
 
 type ItemStatus = "Pronto" | "Convertendo" | "Concluído" | "Erro";
 
@@ -217,7 +218,7 @@ export default function WebPForge() {
       onDragLeave={(event) => { if (event.currentTarget === event.target) setIsDragging(false); }} onDrop={handleDrop}>
       <header className="topbar">
         <div className="brand">
-          <Image src="/icon.png" alt="" width={40} height={40} priority />
+          <BrandMark size={40} priority />
           <div><strong>WebP Forge</strong><span>Conversor de imagens</span></div>
         </div>
         <div className="privacy-pill"><span>●</span> Processamento local e privado</div>

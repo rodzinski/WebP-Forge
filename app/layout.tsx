@@ -15,7 +15,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = "Converta imagens em lote para WebP, com redimensionamento proporcional e processamento privado no navegador.";
   return {
     title, description, metadataBase: base,
-    icons: { icon: "/favicon.ico", shortcut: "/favicon.ico", apple: "/icon.png" },
+    icons: {
+      icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+      shortcut: "/favicon.svg",
+      apple: "/favicon.svg",
+    },
     manifest: "/manifest.webmanifest",
     openGraph: { title, description, type: "website", url: base, images: [{ url: new URL("/og-home.png", base).toString(), width: 1672, height: 941, alt: "WebP sem upload — rápido por design e privado por arquitetura" }] },
     twitter: { card: "summary_large_image", title, description, images: [new URL("/og-home.png", base).toString()] },
