@@ -1,78 +1,129 @@
-# WebP Forge Web
+# WebP Forge
 
-Versão pública do WebP Forge, construída com React 19, Next.js App Router, TypeScript e Tailwind CSS para execução no Cloudflare Workers.
+![WebP Forge — conversão de imagens rápida e privada](./public/og-home.png)
 
-A conversão acontece integralmente no navegador. As imagens não são enviadas, armazenadas ou processadas no servidor.
+Conversor de imagens em lote para WebP, gratuito e executado diretamente no navegador. Redimensione, comprima e baixe imagens sem enviar os arquivos para um servidor.
 
-## Recursos
+## Acesse o WebP Forge
+
+Use a versão pública em:
+
+**[Abrir WebP Forge](https://webp-forge-web.arodzinskicb.workers.dev)**
+
+## Principais recursos
 
 - Conversão em lote para WebP.
-- Suporte a PNG, JPG, JPEG, JFIF, WebP, GIF e BMP.
-- Redimensionamento proporcional, centralização e bordas transparentes.
-- Dimensões e qualidade configuráveis.
-- Download individual ou do lote em ZIP.
+- Entrada em PNG, JPG, JPEG, JFIF, WebP, GIF e BMP.
+- Redimensionamento entre 1 × 1 e 4096 × 4096 pixels.
+- Proporção original preservada, sem distorção.
+- Imagem centralizada com transparência nas áreas restantes.
+- Qualidade WebP configurável entre 1% e 100%.
+- Download individual ou de todo o lote em ZIP.
+- Drag and drop de múltiplos arquivos.
 - Temas claro, escuro e automático.
-- Interface responsiva e instalável como aplicativo web.
-- Acesso público, sem login.
-
-## Requisitos
-
-- Node.js 22.13 ou mais recente.
-- Conta gratuita ou paga no Cloudflare.
-- Repositório no GitHub para publicação automática.
-
-## Desenvolvimento local
-
-```bash
-npm install
-npm run dev
-```
-
-Abra o endereço exibido no terminal.
-
-## Validação
-
-```bash
-npm run lint
-npm run build
-npm run deploy:dry
-```
-
-## Publicação manual
-
-Na primeira vez, autentique o Wrangler e publique:
-
-```bash
-npx wrangler login
-npm run deploy
-```
-
-O Cloudflare criará um endereço público `*.workers.dev`.
-
-## Publicação automática pelo GitHub
-
-1. Envie esta pasta para um repositório no GitHub.
-2. No painel do Cloudflare, abra **Workers & Pages** e importe o repositório.
-3. Selecione a branch `main` como produção.
-4. Configure o comando de build como `npm run build`.
-5. Configure o comando de deploy como `npx wrangler deploy --config dist/server/wrangler.json`.
-6. Salve e execute o primeiro deploy.
-
-Cada novo push para `main` atualizará o site automaticamente. Branches e pull requests podem receber URLs temporárias de preview.
-
-## Domínio personalizado
-
-Após publicar, abra o Worker no Cloudflare e use **Settings > Domains & Routes > Add > Custom Domain**. O endereço `*.workers.dev` permanece disponível mesmo sem domínio próprio.
-
-## Estrutura
-
-- `app/`: rotas, layout e estilos globais.
-- `components/`: componentes visuais e seções da homepage.
-- `lib/`: regras de conversão e utilitários compartilhados.
-- `public/`: ícones, manifesto e imagens públicas.
-- `worker/`: ponto de entrada compatível com Cloudflare Workers.
-- `tests/`: verificações automatizadas.
+- Interface responsiva para desktop, tablet e celular.
 
 ## Privacidade
 
-Não há autenticação do ChatGPT nem integração com o ambiente privado do ChatGPT Sites neste projeto. O processamento de arquivos utiliza APIs do navegador e permanece no dispositivo do visitante.
+A conversão utiliza `createImageBitmap`, Canvas e outras APIs nativas do navegador. As imagens selecionadas:
+
+- permanecem no dispositivo do usuário;
+- não são enviadas ao Cloudflare ou a serviços externos;
+- não são armazenadas em banco de dados;
+- são descartadas ao fechar ou recarregar a página.
+
+Somente preferências de conversão e tema são salvas localmente no navegador.
+
+## Como a conversão funciona
+
+1. O navegador decodifica a imagem selecionada.
+2. A aplicação calcula o maior tamanho que cabe no canvas de destino, mantendo a proporção.
+3. A imagem é centralizada sobre um canvas transparente.
+4. O canvas é codificado como WebP com a qualidade escolhida.
+5. O resultado é disponibilizado para download como `.webp` ou em um arquivo ZIP.
+
+O arquivo não é apenas renomeado: seus pixels são decodificados, redimensionados e codificados novamente no formato WebP.
+
+## Tecnologias
+
+- React 19
+- Next.js 15 App Router
+- TypeScript em modo estrito
+- Tailwind CSS
+- Framer Motion
+- Radix UI
+- Lucide Icons
+- vinext e Cloudflare Workers
+
+Todas as dependências de execução são compatíveis com o ambiente do Cloudflare Workers. A lógica de conversão utiliza Web APIs no cliente.
+
+## Executando localmente
+
+### Requisitos
+
+- Node.js 22.13 ou mais recente
+- npm 10 ou mais recente
+
+### Instalação
+
+```bash
+git clone https://github.com/rodzinski/WebP-Forge.git
+cd WebP-Forge
+npm ci
+npm run dev
+```
+
+Abra o endereço local exibido no terminal.
+
+## Comandos disponíveis
+
+| Comando | Descrição |
+| --- | --- |
+| `npm run dev` | Inicia o ambiente de desenvolvimento |
+| `npm run lint` | Executa a análise estática do código |
+| `npm run build` | Gera o build de produção |
+| `npm test` | Compila e executa os testes automatizados |
+| `npm run deploy:dry` | Simula o pacote que será enviado ao Cloudflare |
+| `npm run deploy` | Compila e publica manualmente no Cloudflare |
+
+## Estrutura do projeto
+
+```text
+app/
+├── app/                  Conversor de imagens
+├── layout.tsx            Layout e metadados globais
+└── page.tsx              Homepage
+components/
+├── landing/              Seções da homepage
+├── motion/               Componentes de animação
+└── ui/                   Componentes reutilizáveis
+lib/                      Utilitários compartilhados
+public/                   Ícones, manifesto e imagens públicas
+tests/                    Testes automatizados
+worker/                   Entrada do Cloudflare Worker
+```
+
+## Publicação no Cloudflare
+
+O repositório pode ser conectado diretamente ao Cloudflare Workers Builds.
+
+| Configuração | Valor |
+| --- | --- |
+| Branch de produção | `main` |
+| Comando de build | `npm run build` |
+| Comando de deploy | `npx wrangler deploy --config dist/server/wrangler.json` |
+| Diretório raiz | vazio |
+
+Cada push para `main` inicia uma nova publicação automaticamente.
+
+## Compatibilidade
+
+A disponibilidade de formatos de entrada depende dos codecs suportados pelo navegador. Navegadores modernos baseados em Chromium oferecem a cobertura mais ampla. GIFs animados são convertidos como uma imagem estática.
+
+## Segurança
+
+Nenhuma credencial é necessária para executar o projeto localmente. Tokens do Cloudflare usados em publicação automatizada devem ser configurados exclusivamente como secrets no painel da plataforma e nunca adicionados ao repositório.
+
+## Licença
+
+Este repositório não inclui uma licença de código aberto. Consulte o proprietário antes de copiar, redistribuir ou reutilizar o código fora dos limites permitidos pela legislação aplicável.
