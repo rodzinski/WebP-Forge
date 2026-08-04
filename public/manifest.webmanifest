@@ -1,0 +1,12 @@
+{
+  "name": "WebP Forge",
+  "short_name": "WebP Forge",
+  "description": "Conversor privado de imagens em lote para WebP.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111512",
+  "theme_color": "#bdf43b",
+  "icons": [
+    { "src": "/icon.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
