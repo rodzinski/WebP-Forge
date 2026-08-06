@@ -4,6 +4,8 @@ import { ChangeEvent, DragEvent, useEffect, useMemo, useRef, useState } from "re
 import { downloadZip } from "client-zip";
 import Image from "next/image";
 import { BrandMark } from "@/components/brand-mark";
+import { SettingsPanel } from "@/components/app/settings-panel";
+import { defaultSettings, type ConversionSettings } from "@/lib/conversion-settings";
 
 type ItemStatus = "Pronto" | "Convertendo" | "Concluído" | "Erro";
 
@@ -18,15 +20,7 @@ type ImageItem = {
   output?: Blob;
 };
 
-type Settings = {
-  width: number;
-  height: number;
-  quality: number;
-  theme: "system" | "light" | "dark";
-};
-
 const supportedExtensions = new Set(["png", "jpg", "jpeg", "jfif", "webp", "avif", "gif", "bmp"]);
-const defaultSettings: Settings = { width: 128, height: 128, quality: 95, theme: "system" };
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -49,7 +43,7 @@ async function loadDimensions(file: File) {
   return dimensions;
 }
 
-async function convertImage(file: File, settings: Settings) {
+async function convertImage(file: File, settings: ConversionSettings) {
   const bitmap = await createImageBitmap(file);
   const canvas = document.createElement("canvas");
   canvas.width = settings.width;
@@ -79,7 +73,7 @@ async function convertImage(file: File, settings: Settings) {
 
 export default function WebPForge() {
   const [items, setItems] = useState<ImageItem[]>([]);
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [settings, setSettings] = useState<ConversionSettings>(defaultSettings);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -284,21 +278,7 @@ export default function WebPForge() {
 
       <footer><span>WebP Forge Web</span><span>Seus arquivos nunca saem deste dispositivo.</span></footer>
 
-      {showSettings && (
-        <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) setShowSettings(false); }}>
-          <section className="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-            <div className="modal-header"><div><p className="eyebrow">PREFERÊNCIAS</p><h2 id="settings-title">Configurações</h2></div><button className="icon-button" onClick={() => setShowSettings(false)} aria-label="Fechar configurações">×</button></div>
-            <div className="field-grid">
-              <label>Largura <div className="number-field"><input type="number" min="1" max="4096" value={settings.width} onChange={(e) => setSettings({ ...settings, width: Math.min(4096, Math.max(1, Number(e.target.value))) })} /><span>px</span></div></label>
-              <label>Altura <div className="number-field"><input type="number" min="1" max="4096" value={settings.height} onChange={(e) => setSettings({ ...settings, height: Math.min(4096, Math.max(1, Number(e.target.value))) })} /><span>px</span></div></label>
-            </div>
-            <label className="range-field"><span><b>Qualidade WebP</b><output>{settings.quality}%</output></span><input type="range" min="1" max="100" value={settings.quality} onChange={(e) => setSettings({ ...settings, quality: Number(e.target.value) })} /></label>
-            <label className="select-field">Tema<select value={settings.theme} onChange={(e) => setSettings({ ...settings, theme: e.target.value as Settings["theme"] })}><option value="system">Seguir o sistema</option><option value="light">Claro</option><option value="dark">Escuro</option></select></label>
-            <div className="setting-note"><strong>Como o redimensionamento funciona</strong><p>A imagem mantém a proporção, é centralizada e recebe bordas transparentes quando necessário. Nunca haverá distorção.</p></div>
-            <button className="button primary full" onClick={() => setShowSettings(false)}>Salvar configurações</button>
-          </section>
-        </div>
-      )}
+      {showSettings && <SettingsPanel settings={settings} onChange={setSettings} onClose={() => setShowSettings(false)} />}
     </main>
   );
 }
