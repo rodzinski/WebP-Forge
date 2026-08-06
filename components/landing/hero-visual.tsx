@@ -8,6 +8,7 @@ const sourceCards = [
   { label: "PNG", tone: "lime" },
   { label: "JPG", tone: "sand" },
   { label: "JFIF", tone: "blue" },
+  { label: "AVIF", tone: "green" },
 ];
 
 export function HeroVisual() {

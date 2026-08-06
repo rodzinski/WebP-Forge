@@ -13,7 +13,7 @@ Use a versão pública em:
 ## Principais recursos
 
 - Conversão em lote para WebP.
-- Entrada em PNG, JPG, JPEG, JFIF, WebP, GIF e BMP.
+- Entrada em PNG, JPG, JPEG, JFIF, WebP, AVIF, GIF e BMP.
 - Redimensionamento entre 1 × 1 e 4096 × 4096 pixels.
 - Proporção original preservada, sem distorção.
 - Imagem centralizada com transparência nas áreas restantes.

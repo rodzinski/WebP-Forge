@@ -21,7 +21,7 @@ export function BentoGrid() {
           <h3>Qualidade sob seu controle.</h3><p>Ajuste compressão e dimensões com feedback instantâneo.</p>
         </StaggerItem>
         <StaggerItem className="bento-card bento-format">
-          <ImageIcon className="size-6" /><div className="format-cloud"><span>PNG</span><span>JPG</span><span>JFIF</span><span>GIF</span><span>BMP</span></div><h3>Um destino.<br />Múltiplas origens.</h3>
+          <ImageIcon className="size-6" /><div className="format-cloud"><span>PNG</span><span>JPG</span><span>AVIF</span><span>JFIF</span><span>GIF</span><span>BMP</span></div><h3>Um destino.<br />Múltiplas origens.</h3>
         </StaggerItem>
         {smallCards.map(({ icon: Icon, title, copy }) => <StaggerItem className="bento-card bento-small" key={title}><div className="bento-icon"><Icon className="size-5" /></div><h3>{title}</h3><p>{copy}</p></StaggerItem>)}
       </Stagger>

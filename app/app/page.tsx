@@ -25,7 +25,7 @@ type Settings = {
   theme: "system" | "light" | "dark";
 };
 
-const supportedExtensions = new Set(["png", "jpg", "jpeg", "jfif", "webp", "gif", "bmp"]);
+const supportedExtensions = new Set(["png", "jpg", "jpeg", "jfif", "webp", "avif", "gif", "bmp"]);
 const defaultSettings: Settings = { width: 128, height: 128, quality: 95, theme: "system" };
 
 function formatBytes(bytes: number) {
@@ -235,7 +235,7 @@ export default function WebPForge() {
           <div className="actions">
             <button className="button secondary" onClick={() => fileInput.current?.click()}>＋ Adicionar imagens</button>
             <button className="button ghost" onClick={() => folderInput.current?.click()}>▣ Adicionar pasta</button>
-            <input ref={fileInput} type="file" accept=".png,.jpg,.jpeg,.jfif,.webp,.gif,.bmp" multiple hidden onChange={handleInput} />
+            <input ref={fileInput} type="file" accept=".png,.jpg,.jpeg,.jfif,.webp,.avif,.gif,.bmp" multiple hidden onChange={handleInput} />
             <input ref={(node) => { folderInput.current = node; node?.setAttribute("webkitdirectory", ""); }} type="file" multiple hidden onChange={handleInput} />
           </div>
         </div>
@@ -246,7 +246,7 @@ export default function WebPForge() {
               <span className="drop-icon">⇩</span>
               <strong>Solte suas imagens aqui</strong>
               <span>ou clique para selecionar arquivos</span>
-              <small>PNG, JPG, JPEG, JFIF, WebP, GIF e BMP</small>
+              <small>PNG, JPG, JPEG, JFIF, WebP, AVIF, GIF e BMP</small>
             </button>
           ) : (
             <>
