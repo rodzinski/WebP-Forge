@@ -1,6 +1,6 @@
 "use client";
 
-import { conversionPresets, type ConversionSettings } from "@/lib/conversion-settings";
+import { conversionPresets, fitModeOptions, type ConversionSettings } from "@/lib/conversion-settings";
 
 type SettingsPanelProps = {
   settings: ConversionSettings;
@@ -37,9 +37,21 @@ export function SettingsPanel({ settings, onChange, onClose }: SettingsPanelProp
           <label>Largura <div className="number-field"><input type="number" min="1" max="4096" value={settings.width} onChange={(event) => update({ width: Math.min(4096, Math.max(1, Number(event.target.value))) })} /><span>px</span></div></label>
           <label>Altura <div className="number-field"><input type="number" min="1" max="4096" value={settings.height} onChange={(event) => update({ height: Math.min(4096, Math.max(1, Number(event.target.value))) })} /><span>px</span></div></label>
         </div>
+        <fieldset className="fit-fieldset">
+          <legend>Modo de ajuste</legend>
+          <div className="fit-options">
+            {fitModeOptions.map((option) => (
+              <button type="button" key={option.value} className={settings.fitMode === option.value ? "selected" : ""}
+                aria-pressed={settings.fitMode === option.value} onClick={() => update({ fitMode: option.value })}>
+                {option.name}
+              </button>
+            ))}
+          </div>
+          <p>{fitModeOptions.find((option) => option.value === settings.fitMode)?.description}</p>
+        </fieldset>
         <label className="range-field"><span><b>Qualidade WebP</b><output>{settings.quality}%</output></span><input type="range" min="1" max="100" value={settings.quality} onChange={(event) => update({ quality: Number(event.target.value) })} /></label>
         <label className="select-field">Tema<select value={settings.theme} onChange={(event) => update({ theme: event.target.value as ConversionSettings["theme"] })}><option value="system">Seguir o sistema</option><option value="light">Claro</option><option value="dark">Escuro</option></select></label>
-        <div className="setting-note"><strong>Como o redimensionamento funciona</strong><p>A imagem mantém a proporção, é centralizada e recebe bordas transparentes quando necessário. Nunca haverá distorção.</p></div>
+        <div className="setting-note"><strong>Processamento local</strong><p>O modo escolhido é aplicado no navegador. Suas imagens não são enviadas para nenhum servidor.</p></div>
         <button className="button primary full" onClick={onClose}>Salvar configurações</button>
       </section>
     </div>

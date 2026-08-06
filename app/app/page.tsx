@@ -54,9 +54,11 @@ async function convertImage(file: File, settings: ConversionSettings) {
   context.clearRect(0, 0, settings.width, settings.height);
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
-  const scale = Math.min(settings.width / bitmap.width, settings.height / bitmap.height);
-  const drawWidth = Math.max(1, Math.round(bitmap.width * scale));
-  const drawHeight = Math.max(1, Math.round(bitmap.height * scale));
+  const scale = settings.fitMode === "crop"
+    ? Math.max(settings.width / bitmap.width, settings.height / bitmap.height)
+    : Math.min(settings.width / bitmap.width, settings.height / bitmap.height);
+  const drawWidth = settings.fitMode === "stretch" ? settings.width : Math.max(1, Math.round(bitmap.width * scale));
+  const drawHeight = settings.fitMode === "stretch" ? settings.height : Math.max(1, Math.round(bitmap.height * scale));
   const x = Math.round((settings.width - drawWidth) / 2);
   const y = Math.round((settings.height - drawHeight) / 2);
   context.drawImage(bitmap, x, y, drawWidth, drawHeight);
@@ -264,7 +266,7 @@ export default function WebPForge() {
         </section>
 
         <section className="conversion-bar">
-          <div className="preset-summary"><span>SAÍDA</span><strong>{settings.width} × {settings.height}px</strong><i></i><strong>WebP · {settings.quality}%</strong></div>
+          <div className="preset-summary"><span>SAÍDA</span><strong>{settings.width} × {settings.height}px</strong><i></i><strong>{settings.fitMode === "contain" ? "Conter" : settings.fitMode === "crop" ? "Recortar" : "Esticar"}</strong><i></i><strong>WebP · {settings.quality}%</strong></div>
           <div className="progress-copy"><span>{message}</span>{items.length > 0 && <small>{Math.round(progress)}%</small>}</div>
           <div className="progress-track"><span style={{ width: `${progress}%` }} /></div>
           <div className="conversion-actions">

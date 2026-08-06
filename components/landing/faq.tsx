@@ -3,7 +3,7 @@ import { Reveal } from "@/components/motion/reveal";
 
 const questions = [
   { question: "Minhas imagens são enviadas para algum servidor?", answer: "Não. A leitura, o redimensionamento e a codificação WebP acontecem integralmente no navegador. O servidor entrega apenas a interface da aplicação." },
-  { question: "A imagem fica distorcida ao chegar em 128 × 128?", answer: "Não. O WebP Forge mantém a proporção original, centraliza a imagem e preenche o espaço restante com transparência quando necessário." },
+  { question: "A imagem fica distorcida ao redimensionar?", answer: "No modo Conter, a proporção é preservada e o espaço restante recebe transparência. Você também pode escolher Recortar para preencher sem distorção ou Esticar para ocupar exatamente as dimensões configuradas." },
   { question: "Quais formatos são aceitos?", answer: "A versão web aceita PNG, JPG, JPEG, JFIF, WebP, AVIF, GIF e BMP quando suportados pelo navegador. GIFs usam o primeiro quadro para conversão." },
   { question: "Existe limite de imagens por lote?", answer: "Não impomos um limite artificial. A capacidade prática depende da memória disponível no dispositivo e do tamanho dos arquivos selecionados." },
   { question: "Funciona em celular e tablet?", answer: "Sim. A interface é responsiva e a conversão utiliza APIs disponíveis nos navegadores modernos. Em lotes muito grandes, computadores continuam oferecendo mais memória e desempenho." },

@@ -20,3 +20,17 @@ test("keeps image conversion on the device", async () => {
   assert.match(page, /canvas\.toBlob/);
   assert.match(page, /image\/webp/);
 });
+
+test("offers contain, crop and stretch fitting modes", async () => {
+  const [page, settings] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../lib/conversion-settings.ts", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(settings, /"contain" \| "crop" \| "stretch"/);
+  assert.match(settings, /name: "Conter"/);
+  assert.match(settings, /name: "Recortar"/);
+  assert.match(settings, /name: "Esticar"/);
+  assert.match(page, /settings\.fitMode === "crop"/);
+  assert.match(page, /settings\.fitMode === "stretch"/);
+});
