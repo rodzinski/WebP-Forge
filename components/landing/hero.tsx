@@ -9,7 +9,7 @@ export function Hero() {
     <section className="hero-section">
       <div className="hero-copy">
         <HeroReveal><span className="section-kicker"><Zap className="size-3.5" /> Conversão instantânea no navegador</span></HeroReveal>
-        <HeroReveal delay={.08}><h1>WebP sem upload.<br /><span>Sem espera.</span></h1></HeroReveal>
+        <HeroReveal delay={.08}><h1>Conversão sem upload.<br /><span>Sem espera.</span></h1></HeroReveal>
         <HeroReveal delay={.16}><p>Converta lotes inteiros, padronize dimensões e preserve transparência — com processamento privado que nunca envia seus arquivos para um servidor.</p></HeroReveal>
         <HeroReveal delay={.24} className="hero-actions">
           <Button asChild variant="accent" size="lg"><Link href="/app">Converter imagens <ArrowRight className="size-4" /></Link></Button>

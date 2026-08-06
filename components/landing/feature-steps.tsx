@@ -4,7 +4,7 @@ import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 const steps = [
   { number: "01", icon: FilePlus2, title: "Adicione", copy: "Arraste imagens ou selecione uma pasta inteira." },
   { number: "02", icon: Settings2, title: "Configure", copy: "Defina dimensões e qualidade para todo o lote." },
-  { number: "03", icon: Download, title: "Converta", copy: "Baixe cada WebP ou um ZIP completo em segundos." },
+  { number: "03", icon: Download, title: "Converta", copy: "Escolha o formato e baixe cada imagem ou um ZIP completo." },
 ];
 
 export function FeatureSteps() {

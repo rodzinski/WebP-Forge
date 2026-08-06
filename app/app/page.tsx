@@ -6,6 +6,7 @@ import Image from "next/image";
 import { BrandMark } from "@/components/brand-mark";
 import { SettingsPanel } from "@/components/app/settings-panel";
 import { defaultSettings, type ConversionSettings } from "@/lib/conversion-settings";
+import { encodeCanvas, outputName } from "@/lib/image-output";
 
 type ItemStatus = "Pronto" | "Convertendo" | "Concluído" | "Erro";
 
@@ -18,6 +19,7 @@ type ImageItem = {
   status: ItemStatus;
   error?: string;
   output?: Blob;
+  outputFormat?: ConversionSettings["outputFormat"];
 };
 
 const supportedExtensions = new Set(["png", "jpg", "jpeg", "jfif", "webp", "avif", "gif", "bmp"]);
@@ -30,10 +32,6 @@ function formatBytes(bytes: number) {
 
 function extensionOf(name: string) {
   return name.split(".").pop()?.toLowerCase() ?? "";
-}
-
-function outputName(name: string) {
-  return `${name.replace(/\.[^.]+$/, "")}.webp`;
 }
 
 async function loadDimensions(file: File) {
@@ -51,7 +49,12 @@ async function convertImage(file: File, settings: ConversionSettings) {
   const context = canvas.getContext("2d", { alpha: true });
   if (!context) throw new Error("Canvas indisponível neste navegador.");
 
-  context.clearRect(0, 0, settings.width, settings.height);
+  if (settings.outputFormat === "jpg") {
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, settings.width, settings.height);
+  } else {
+    context.clearRect(0, 0, settings.width, settings.height);
+  }
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
   const scale = settings.fitMode === "crop"
@@ -64,13 +67,7 @@ async function convertImage(file: File, settings: ConversionSettings) {
   context.drawImage(bitmap, x, y, drawWidth, drawHeight);
   bitmap.close();
 
-  const blob = await new Promise<Blob | null>((resolve) =>
-    canvas.toBlob(resolve, "image/webp", settings.quality / 100),
-  );
-  if (!blob || blob.type !== "image/webp") {
-    throw new Error("Seu navegador não conseguiu gerar WebP.");
-  }
-  return blob;
+  return encodeCanvas(canvas, settings);
 }
 
 export default function WebPForge() {
@@ -162,7 +159,7 @@ export default function WebPForge() {
         const output = await convertImage(item.file, settings);
         success += 1;
         setItems((current) => current.map((entry) => entry.id === item.id
-          ? { ...entry, output, status: "Concluído" } : entry));
+          ? { ...entry, output, outputFormat: settings.outputFormat, status: "Concluído" } : entry));
         setMessage(`Convertendo ${success} de ${items.length}`);
       } catch (error) {
         setItems((current) => current.map((entry) => entry.id === item.id
@@ -179,10 +176,12 @@ export default function WebPForge() {
     if (!converted.length) return;
     const names = new Map<string, number>();
     const files = converted.map((item) => {
-      const original = outputName(item.file.name);
+      const format = item.outputFormat ?? settings.outputFormat;
+      const original = outputName(item.file.name, format);
       const count = names.get(original) ?? 0;
       names.set(original, count + 1);
-      const name = count ? original.replace(/\.webp$/, `-${count + 1}.webp`) : original;
+      const extension = `.${format}`;
+      const name = count ? original.replace(extension, `-${count + 1}${extension}`) : original;
       return { name, input: item.output! };
     });
     const blob = await downloadZip(files).blob();
@@ -226,7 +225,7 @@ export default function WebPForge() {
           <div>
             <p className="eyebrow">CONVERSÃO EM LOTE</p>
             <h1>Imagens perfeitas.<br /><em>Prontas para a web.</em></h1>
-            <p className="intro-copy">Converta várias imagens para WebP com tamanho uniforme, alta qualidade e transparência preservada.</p>
+            <p className="intro-copy">Converta várias imagens para WebP, AVIF, PNG, JPG ou ICO com tamanho uniforme e alta qualidade.</p>
           </div>
           <div className="actions">
             <button className="button secondary" onClick={() => fileInput.current?.click()}>＋ Adicionar imagens</button>
@@ -256,7 +255,7 @@ export default function WebPForge() {
                     <Image src={item.previewUrl} alt="" width={48} height={48} unoptimized />
                     <div className="file-info"><strong title={item.file.name}>{item.file.name}</strong><span>{item.width} × {item.height} · {formatBytes(item.file.size)}</span></div>
                     <span className={`status status-${item.status.toLowerCase().replace("í", "i")}`} title={item.error}>{item.status}</span>
-                    {item.output ? <button className="row-button" onClick={() => triggerDownload(item.output!, outputName(item.file.name))} aria-label={`Baixar ${item.file.name}`}>↓</button>
+                    {item.output ? <button className="row-button" onClick={() => triggerDownload(item.output!, outputName(item.file.name, item.outputFormat ?? settings.outputFormat))} aria-label={`Baixar ${item.file.name}`}>↓</button>
                       : <button className="row-button remove" onClick={() => removeItem(item.id)} disabled={isConverting} aria-label={`Remover ${item.file.name}`}>×</button>}
                   </article>
                 ))}
@@ -266,13 +265,13 @@ export default function WebPForge() {
         </section>
 
         <section className="conversion-bar">
-          <div className="preset-summary"><span>SAÍDA</span><strong>{settings.width} × {settings.height}px</strong><i></i><strong>{settings.fitMode === "contain" ? "Conter" : settings.fitMode === "crop" ? "Recortar" : "Esticar"}</strong><i></i><strong>WebP · {settings.quality}%</strong></div>
+          <div className="preset-summary"><span>SAÍDA</span><strong>{settings.width} × {settings.height}px</strong><i></i><strong>{settings.fitMode === "contain" ? "Conter" : settings.fitMode === "crop" ? "Recortar" : "Esticar"}</strong><i></i><strong>{settings.outputFormat.toUpperCase()} · {settings.quality}%</strong></div>
           <div className="progress-copy"><span>{message}</span>{items.length > 0 && <small>{Math.round(progress)}%</small>}</div>
           <div className="progress-track"><span style={{ width: `${progress}%` }} /></div>
           <div className="conversion-actions">
             {completed > 0 && !isConverting && <button className="button secondary" onClick={downloadAll}>↓ Baixar ZIP</button>}
             <button className="button primary" onClick={convertAll} disabled={!items.length || isConverting}>
-              {isConverting ? "Convertendo…" : "Converter para WebP"}
+              {isConverting ? "Convertendo…" : `Converter para ${settings.outputFormat.toUpperCase()}`}
             </button>
           </div>
         </section>

@@ -1,6 +1,6 @@
 "use client";
 
-import { conversionPresets, fitModeOptions, type ConversionSettings } from "@/lib/conversion-settings";
+import { conversionPresets, fitModeOptions, outputFormatOptions, type ConversionSettings } from "@/lib/conversion-settings";
 
 type SettingsPanelProps = {
   settings: ConversionSettings;
@@ -11,6 +11,12 @@ type SettingsPanelProps = {
 export function SettingsPanel({ settings, onChange, onClose }: SettingsPanelProps) {
   function update(values: Partial<ConversionSettings>) {
     onChange({ ...settings, ...values });
+  }
+
+  function selectOutputFormat(outputFormat: ConversionSettings["outputFormat"]) {
+    update(outputFormat === "ico"
+      ? { outputFormat, width: Math.min(settings.width, 256), height: Math.min(settings.height, 256) }
+      : { outputFormat });
   }
 
   return (
@@ -49,7 +55,13 @@ export function SettingsPanel({ settings, onChange, onClose }: SettingsPanelProp
           </div>
           <p>{fitModeOptions.find((option) => option.value === settings.fitMode)?.description}</p>
         </fieldset>
-        <label className="range-field"><span><b>Qualidade WebP</b><output>{settings.quality}%</output></span><input type="range" min="1" max="100" value={settings.quality} onChange={(event) => update({ quality: Number(event.target.value) })} /></label>
+        <label className="select-field">Formato de saída
+          <select value={settings.outputFormat} onChange={(event) => selectOutputFormat(event.target.value as ConversionSettings["outputFormat"])}>
+            {outputFormatOptions.map((option) => <option value={option.value} key={option.value}>{option.name}</option>)}
+          </select>
+          <small>{outputFormatOptions.find((option) => option.value === settings.outputFormat)?.description}</small>
+        </label>
+        <label className="range-field"><span><b>Qualidade da saída</b><output>{settings.quality}%</output></span><input type="range" min="1" max="100" value={settings.quality} onChange={(event) => update({ quality: Number(event.target.value) })} /></label>
         <label className="select-field">Tema<select value={settings.theme} onChange={(event) => update({ theme: event.target.value as ConversionSettings["theme"] })}><option value="system">Seguir o sistema</option><option value="light">Claro</option><option value="dark">Escuro</option></select></label>
         <div className="setting-note"><strong>Processamento local</strong><p>O modo escolhido é aplicado no navegador. Suas imagens não são enviadas para nenhum servidor.</p></div>
         <button className="button primary full" onClick={onClose}>Salvar configurações</button>

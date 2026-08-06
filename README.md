@@ -2,7 +2,7 @@
 
 ![WebP Forge — conversão de imagens rápida e privada](./public/og-home.png)
 
-Conversor de imagens em lote para WebP, gratuito e executado diretamente no navegador. Redimensione, comprima e baixe imagens sem enviar os arquivos para um servidor.
+Conversor de imagens em lote gratuito e executado diretamente no navegador. Redimensione, comprima e baixe imagens sem enviar os arquivos para um servidor.
 
 ## Acesse o WebP Forge
 
@@ -12,12 +12,12 @@ Use a versão pública em:
 
 ## Principais recursos
 
-- Conversão em lote para WebP.
+- Conversão em lote para WebP, AVIF, PNG, JPG e ICO.
 - Entrada em PNG, JPG, JPEG, JFIF, WebP, AVIF, GIF e BMP.
 - Redimensionamento entre 1 × 1 e 4096 × 4096 pixels.
 - Proporção original preservada, sem distorção.
 - Imagem centralizada com transparência nas áreas restantes.
-- Qualidade WebP configurável entre 1% e 100%.
+- Qualidade configurável entre 1% e 100%.
 - Download individual ou de todo o lote em ZIP.
 - Drag and drop de múltiplos arquivos.
 - Temas claro, escuro e automático.
@@ -39,10 +39,10 @@ Somente preferências de conversão e tema são salvas localmente no navegador.
 1. O navegador decodifica a imagem selecionada.
 2. A aplicação calcula o maior tamanho que cabe no canvas de destino, mantendo a proporção.
 3. A imagem é centralizada sobre um canvas transparente.
-4. O canvas é codificado como WebP com a qualidade escolhida.
+4. O canvas é codificado no formato e na qualidade escolhidos.
 5. O resultado é disponibilizado para download como `.webp` ou em um arquivo ZIP.
 
-O arquivo não é apenas renomeado: seus pixels são decodificados, redimensionados e codificados novamente no formato WebP.
+O arquivo não é apenas renomeado: seus pixels são decodificados, redimensionados e codificados novamente no formato selecionado.
 
 ## Tecnologias
 

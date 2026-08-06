@@ -3,6 +3,7 @@ export type ConversionSettings = {
   height: number;
   quality: number;
   fitMode: "contain" | "crop" | "stretch";
+  outputFormat: "webp" | "avif" | "png" | "jpg" | "ico";
   theme: "system" | "light" | "dark";
 };
 
@@ -20,6 +21,7 @@ export const defaultSettings: ConversionSettings = {
   height: 128,
   quality: 95,
   fitMode: "contain",
+  outputFormat: "webp",
   theme: "system",
 };
 
@@ -34,4 +36,12 @@ export const fitModeOptions: readonly { value: ConversionSettings["fitMode"]; na
   { value: "contain", name: "Conter", description: "Mantém tudo e adiciona transparência." },
   { value: "crop", name: "Recortar", description: "Preenche a área e corta o excedente." },
   { value: "stretch", name: "Esticar", description: "Preenche exatamente e pode alterar a proporção." },
+];
+
+export const outputFormatOptions: readonly { value: ConversionSettings["outputFormat"]; name: string; description: string }[] = [
+  { value: "webp", name: "WebP", description: "Qualidade e tamanho equilibrados." },
+  { value: "avif", name: "AVIF", description: "Compressão moderna carregada sob demanda." },
+  { value: "png", name: "PNG", description: "Sem perdas e com transparência." },
+  { value: "jpg", name: "JPG", description: "Alta compatibilidade para fotografias." },
+  { value: "ico", name: "ICO", description: "Ícones de até 256 × 256 pixels." },
 ];

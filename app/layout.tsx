@@ -11,8 +11,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const base = new URL(`${protocol}://${host}`);
-  const title = "WebP Forge — Conversor de imagens WebP";
-  const description = "Converta imagens em lote para WebP, com redimensionamento proporcional e processamento privado no navegador.";
+  const title = "WebP Forge — Conversor de imagens privado";
+  const description = "Converta imagens em lote para WebP, AVIF, PNG, JPG e ICO com processamento privado no navegador.";
   return {
     title, description, metadataBase: base,
     icons: {

@@ -3,7 +3,7 @@ import { Reveal } from "@/components/motion/reveal";
 
 const capabilities = [
   { icon: Monitor, label: "Web APIs" }, { icon: Cloud, label: "Cloudflare" }, { icon: Cpu, label: "Processamento local" },
-  { icon: FileImage, label: "WebP nativo" }, { icon: ShieldCheck, label: "Privacy-first" },
+  { icon: FileImage, label: "5 formatos de saída" }, { icon: ShieldCheck, label: "Privacy-first" },
 ];
 
 export function ProofStrip() {

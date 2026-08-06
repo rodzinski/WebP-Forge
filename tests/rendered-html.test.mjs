@@ -13,12 +13,20 @@ test("accepts AVIF as a local input format", async () => {
 });
 
 test("keeps image conversion on the device", async () => {
-  const page = await readFile(appPageUrl, "utf8");
+  const [page, output] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../lib/image-output.ts", import.meta.url), "utf8"),
+  ]);
 
   assert.doesNotMatch(page, /\bfetch\s*\(/);
   assert.doesNotMatch(page, /XMLHttpRequest|FormData/);
-  assert.match(page, /canvas\.toBlob/);
-  assert.match(page, /image\/webp/);
+  assert.match(output, /canvas\.toBlob/);
+  assert.match(output, /import\("@jsquash\/avif\/encode\.js"\)/);
+});
+
+test("exports WebP, AVIF, PNG, JPG and ICO", async () => {
+  const settings = await readFile(new URL("../lib/conversion-settings.ts", import.meta.url), "utf8");
+  assert.match(settings, /"webp" \| "avif" \| "png" \| "jpg" \| "ico"/);
 });
 
 test("offers contain, crop and stretch fitting modes", async () => {
