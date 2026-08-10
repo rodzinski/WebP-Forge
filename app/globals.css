@@ -74,8 +74,10 @@ h1 em { color: var(--muted); font-style: normal; }
 .file-info { min-width: 0; display: grid; gap: 4px; }.file-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }.file-info span { color: var(--muted); font-size: 11px; }
 .status { justify-self: end; border-radius: 99px; padding: 6px 9px; font-size: 10px; background: var(--surface-2); color: var(--muted); }
 .status-concluido { background: color-mix(in srgb, #49a468 15%, transparent); color: #49a468; }.status-erro { background: color-mix(in srgb, var(--danger) 13%, transparent); color: var(--danger); }.status-convertendo { color: var(--blue); }
+.status-cancelado { background: color-mix(in srgb, var(--danger) 9%, transparent); color: var(--muted); }
 .row-button { width: 32px; height: 32px; border: 1px solid var(--line); background: var(--surface-2); border-radius: 9px; cursor: pointer; }.row-button.remove { color: var(--muted); }
 .row-actions { display: flex; gap: 6px; }.row-button.compare { color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 58%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 75%, var(--line)); }
+.row-button.cancel { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 35%, var(--line)); }
 
 .conversion-bar { margin-top: 18px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 15px 16px 15px 20px; box-shadow: var(--shadow); }
 .preset-summary { display: flex; align-items: center; gap: 10px; white-space: nowrap; }.preset-summary span { color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .12em; }.preset-summary strong { font-size: 12px; }.preset-summary i { width: 1px; height: 18px; background: var(--line); }

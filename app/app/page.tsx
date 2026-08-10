@@ -9,7 +9,7 @@ import { ComparisonPanel } from "@/components/app/comparison-panel";
 import { defaultSettings, type ConversionSettings } from "@/lib/conversion-settings";
 import { encodeCanvas, outputName } from "@/lib/image-output";
 
-type ItemStatus = "Pronto" | "Convertendo" | "Concluído" | "Erro";
+type ItemStatus = "Pronto" | "Convertendo" | "Concluído" | "Erro" | "Cancelado";
 
 type ImageItem = {
   id: string;
@@ -95,6 +95,7 @@ export default function WebPForge() {
   const fileInput = useRef<HTMLInputElement>(null);
   const folderInput = useRef<HTMLInputElement>(null);
   const itemsRef = useRef<ImageItem[]>([]);
+  const cancelledIds = useRef(new Set<string>());
 
   useEffect(() => {
     const saved = localStorage.getItem("webp-forge-settings");
@@ -115,7 +116,8 @@ export default function WebPForge() {
 
   const completed = items.filter((item) => item.status === "Concluído").length;
   const failed = items.filter((item) => item.status === "Erro").length;
-  const progress = items.length ? ((completed + failed) / items.length) * 100 : 0;
+  const cancelled = items.filter((item) => item.status === "Cancelado").length;
+  const progress = items.length ? ((completed + failed + cancelled) / items.length) * 100 : 0;
   const totalSize = useMemo(() => items.reduce((sum, item) => sum + item.file.size, 0), [items]);
   const outputTotal = useMemo(() => items.reduce((sum, item) => sum + (item.output?.size ?? 0), 0), [items]);
   const comparedItem = comparisonId ? items.find((item) => item.id === comparisonId && item.output) : undefined;
@@ -164,17 +166,36 @@ export default function WebPForge() {
     });
   }
 
+  function moveItem(id: string, offset: number) {
+    setItems((current) => {
+      const index = current.findIndex((item) => item.id === id);
+      const target = index + offset;
+      if (index < 0 || target < 0 || target >= current.length) return current;
+      const next = [...current];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  }
+
+  function cancelItem(id: string) {
+    cancelledIds.current.add(id);
+    setItems((current) => current.map((item) => item.id === id ? { ...item, status: "Cancelado" } : item));
+  }
+
   async function convertAll() {
     if (!items.length || isConverting) return;
     setIsConverting(true);
+    cancelledIds.current.clear();
     setMessage("Preparando conversão…");
     let success = 0;
 
     for (const item of items) {
+      if (cancelledIds.current.has(item.id)) continue;
       setItems((current) => current.map((entry) => entry.id === item.id
         ? { ...entry, status: "Convertendo", error: undefined } : entry));
       try {
         const output = await convertImage(item.file, settings);
+        if (cancelledIds.current.has(item.id)) continue;
         success += 1;
         setItems((current) => current.map((entry) => entry.id === item.id
           ? { ...entry, output, outputFormat: settings.outputFormat, status: "Concluído" } : entry));
@@ -273,8 +294,12 @@ export default function WebPForge() {
                     <Image src={item.previewUrl} alt="" width={48} height={48} unoptimized />
                     <div className="file-info"><strong title={item.file.name}>{item.file.name}</strong><span>{item.width} × {item.height} · {formatBytes(item.file.size)}{item.frameCount > 1 && ` · ${item.frameCount} quadros · saída pelo 1º quadro`}</span></div>
                     <span className={`status status-${item.status.toLowerCase().replace("í", "i")}`} title={item.error}>{item.status}</span>
-                    {item.output ? <div className="row-actions"><button className="row-button compare" onClick={() => setComparisonId(item.id)} aria-label={`Comparar ${item.file.name}`}>◐</button><button className="row-button" onClick={() => triggerDownload(item.output!, outputName(item.file.name, item.outputFormat ?? settings.outputFormat))} aria-label={`Baixar ${item.file.name}`}>↓</button></div>
-                      : <button className="row-button remove" onClick={() => removeItem(item.id)} disabled={isConverting} aria-label={`Remover ${item.file.name}`}>×</button>}
+                    <div className="row-actions">
+                      {!isConverting && <><button className="row-button" onClick={() => moveItem(item.id, -1)} aria-label={`Mover ${item.file.name} para cima`}>↑</button><button className="row-button" onClick={() => moveItem(item.id, 1)} aria-label={`Mover ${item.file.name} para baixo`}>↓</button></>}
+                      {isConverting && item.status !== "Concluído" && item.status !== "Cancelado" && <button className="row-button cancel" onClick={() => cancelItem(item.id)} aria-label={`Cancelar ${item.file.name}`}>×</button>}
+                      {item.output ? <><button className="row-button compare" onClick={() => setComparisonId(item.id)} aria-label={`Comparar ${item.file.name}`}>◐</button><button className="row-button" onClick={() => triggerDownload(item.output!, outputName(item.file.name, item.outputFormat ?? settings.outputFormat))} aria-label={`Baixar ${item.file.name}`}>⇩</button></>
+                        : !isConverting && <button className="row-button remove" onClick={() => removeItem(item.id)} aria-label={`Remover ${item.file.name}`}>×</button>}
+                    </div>
                   </article>
                 ))}
               </div>

@@ -75,3 +75,10 @@ test("stores reusable custom conversion profiles locally", async () => {
   assert.match(settings, /saveProfile/);
   assert.match(settings, /Excluir/);
 });
+
+test("reorders and cancels individual batch items", async () => {
+  const page = await readFile(appPageUrl, "utf8");
+  assert.match(page, /moveItem/);
+  assert.match(page, /cancelItem/);
+  assert.match(page, /cancelledIds/);
+});
