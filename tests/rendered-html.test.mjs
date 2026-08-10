@@ -61,3 +61,10 @@ test("explains automatic metadata removal in the browser", async () => {
   const settings = await readFile(new URL("../components/app/settings-panel.tsx", import.meta.url), "utf8");
   assert.match(settings, /remove EXIF, localização e outros metadados automaticamente/);
 });
+
+test("detects animated GIF and WebP inputs and warns about first-frame output", async () => {
+  const page = await readFile(appPageUrl, "utf8");
+  assert.match(page, /detectFrameCount/);
+  assert.match(page, /0x41.*0x4e.*0x4d.*0x46/s);
+  assert.match(page, /saída pelo 1º quadro/);
+});

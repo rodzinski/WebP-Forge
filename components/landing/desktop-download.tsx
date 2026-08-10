@@ -26,7 +26,7 @@ export function DesktopDownload() {
           </Button>
           <a className="desktop-release-link" href="https://github.com/rodzinski/WebP-Forge/releases/latest" target="_blank" rel="noreferrer">Ver notas da versão <span aria-hidden="true">↗</span></a>
         </div>
-        <span className="desktop-meta">Windows 10/11 · x64 · v1.5.0 · 78 MB</span>
+        <span className="desktop-meta">Windows 10/11 · x64 · v1.6.0 · 78 MB</span>
       </Reveal>
 
       <Reveal className="desktop-preview" delay={0.1}>

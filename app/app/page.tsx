@@ -21,6 +21,7 @@ type ImageItem = {
   error?: string;
   output?: Blob;
   outputFormat?: ConversionSettings["outputFormat"];
+  frameCount: number;
 };
 
 const supportedExtensions = new Set(["png", "jpg", "jpeg", "jfif", "webp", "avif", "gif", "bmp"]);
@@ -40,6 +41,17 @@ async function loadDimensions(file: File) {
   const dimensions = { width: bitmap.width, height: bitmap.height };
   bitmap.close();
   return dimensions;
+}
+
+async function detectFrameCount(file: File) {
+  const extension = extensionOf(file.name);
+  if (extension !== "gif" && extension !== "webp") return 1;
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  if (extension === "gif") return Math.max(1, bytes.reduce((count, byte) => count + (byte === 0x2c ? 1 : 0), 0));
+  let frames = 0;
+  for (let index = 0; index <= bytes.length - 4; index += 1)
+    if (bytes[index] === 0x41 && bytes[index + 1] === 0x4e && bytes[index + 2] === 0x4d && bytes[index + 3] === 0x46) frames += 1;
+  return Math.max(1, frames);
 }
 
 async function convertImage(file: File, settings: ConversionSettings) {
@@ -122,10 +134,10 @@ export default function WebPForge() {
     setMessage(`Lendo ${incoming.length} imagem(ns)…`);
     const loaded = await Promise.all(incoming.map(async (file) => {
       try {
-        const dimensions = await loadDimensions(file);
+        const [dimensions, frameCount] = await Promise.all([loadDimensions(file), detectFrameCount(file)]);
         return {
           id: crypto.randomUUID(), file, previewUrl: URL.createObjectURL(file),
-          ...dimensions, status: "Pronto" as ItemStatus,
+          ...dimensions, frameCount, status: "Pronto" as ItemStatus,
         };
       } catch {
         return null;
@@ -133,7 +145,8 @@ export default function WebPForge() {
     }));
     const valid = loaded.filter((item): item is ImageItem => item !== null);
     setItems((current) => [...current, ...valid]);
-    setMessage(`${valid.length} imagem(ns) adicionada(s)`);
+    const animated = valid.filter((item) => item.frameCount > 1).length;
+    setMessage(`${valid.length} imagem(ns) adicionada(s)${animated ? ` · ${animated} animação(ões) usarão o primeiro quadro` : ""}`);
   }
 
   function clearAll() {
@@ -258,7 +271,7 @@ export default function WebPForge() {
                 {items.map((item) => (
                   <article className="image-row" key={item.id}>
                     <Image src={item.previewUrl} alt="" width={48} height={48} unoptimized />
-                    <div className="file-info"><strong title={item.file.name}>{item.file.name}</strong><span>{item.width} × {item.height} · {formatBytes(item.file.size)}</span></div>
+                    <div className="file-info"><strong title={item.file.name}>{item.file.name}</strong><span>{item.width} × {item.height} · {formatBytes(item.file.size)}{item.frameCount > 1 && ` · ${item.frameCount} quadros · saída pelo 1º quadro`}</span></div>
                     <span className={`status status-${item.status.toLowerCase().replace("í", "i")}`} title={item.error}>{item.status}</span>
                     {item.output ? <div className="row-actions"><button className="row-button compare" onClick={() => setComparisonId(item.id)} aria-label={`Comparar ${item.file.name}`}>◐</button><button className="row-button" onClick={() => triggerDownload(item.output!, outputName(item.file.name, item.outputFormat ?? settings.outputFormat))} aria-label={`Baixar ${item.file.name}`}>↓</button></div>
                       : <button className="row-button remove" onClick={() => removeItem(item.id)} disabled={isConverting} aria-label={`Remover ${item.file.name}`}>×</button>}
