@@ -5,6 +5,7 @@ import { downloadZip } from "client-zip";
 import Image from "next/image";
 import { BrandMark } from "@/components/brand-mark";
 import { SettingsPanel } from "@/components/app/settings-panel";
+import { ComparisonPanel } from "@/components/app/comparison-panel";
 import { defaultSettings, type ConversionSettings } from "@/lib/conversion-settings";
 import { encodeCanvas, outputName } from "@/lib/image-output";
 
@@ -77,6 +78,7 @@ export default function WebPForge() {
   const [isConverting, setIsConverting] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [comparisonId, setComparisonId] = useState<string | null>(null);
   const [message, setMessage] = useState("Adicione imagens para começar");
   const fileInput = useRef<HTMLInputElement>(null);
   const folderInput = useRef<HTMLInputElement>(null);
@@ -103,6 +105,8 @@ export default function WebPForge() {
   const failed = items.filter((item) => item.status === "Erro").length;
   const progress = items.length ? ((completed + failed) / items.length) * 100 : 0;
   const totalSize = useMemo(() => items.reduce((sum, item) => sum + item.file.size, 0), [items]);
+  const outputTotal = useMemo(() => items.reduce((sum, item) => sum + (item.output?.size ?? 0), 0), [items]);
+  const comparedItem = comparisonId ? items.find((item) => item.id === comparisonId && item.output) : undefined;
 
   async function addFiles(files: FileList | File[]) {
     const known = new Set(items.map((item) => `${item.file.name}:${item.file.size}:${item.file.lastModified}`));
@@ -135,6 +139,7 @@ export default function WebPForge() {
   function clearAll() {
     items.forEach((item) => URL.revokeObjectURL(item.previewUrl));
     setItems([]);
+    setComparisonId(null);
     setMessage("Lista limpa");
   }
 
@@ -255,7 +260,7 @@ export default function WebPForge() {
                     <Image src={item.previewUrl} alt="" width={48} height={48} unoptimized />
                     <div className="file-info"><strong title={item.file.name}>{item.file.name}</strong><span>{item.width} × {item.height} · {formatBytes(item.file.size)}</span></div>
                     <span className={`status status-${item.status.toLowerCase().replace("í", "i")}`} title={item.error}>{item.status}</span>
-                    {item.output ? <button className="row-button" onClick={() => triggerDownload(item.output!, outputName(item.file.name, item.outputFormat ?? settings.outputFormat))} aria-label={`Baixar ${item.file.name}`}>↓</button>
+                    {item.output ? <div className="row-actions"><button className="row-button compare" onClick={() => setComparisonId(item.id)} aria-label={`Comparar ${item.file.name}`}>◐</button><button className="row-button" onClick={() => triggerDownload(item.output!, outputName(item.file.name, item.outputFormat ?? settings.outputFormat))} aria-label={`Baixar ${item.file.name}`}>↓</button></div>
                       : <button className="row-button remove" onClick={() => removeItem(item.id)} disabled={isConverting} aria-label={`Remover ${item.file.name}`}>×</button>}
                   </article>
                 ))}
@@ -266,7 +271,7 @@ export default function WebPForge() {
 
         <section className="conversion-bar">
           <div className="preset-summary"><span>SAÍDA</span><strong>{settings.width} × {settings.height}px</strong><i></i><strong>{settings.fitMode === "contain" ? "Conter" : settings.fitMode === "crop" ? "Recortar" : "Esticar"}</strong><i></i><strong>{settings.outputFormat.toUpperCase()} · {settings.quality}%</strong></div>
-          <div className="progress-copy"><span>{message}</span>{items.length > 0 && <small>{Math.round(progress)}%</small>}</div>
+          <div className="progress-copy"><span>{message}{outputTotal > 0 && ` · ${formatBytes(totalSize)} → ${formatBytes(outputTotal)}`}</span>{items.length > 0 && <small>{Math.round(progress)}%</small>}</div>
           <div className="progress-track"><span style={{ width: `${progress}%` }} /></div>
           <div className="conversion-actions">
             {completed > 0 && !isConverting && <button className="button secondary" onClick={downloadAll}>↓ Baixar ZIP</button>}
@@ -280,6 +285,9 @@ export default function WebPForge() {
       <footer><span>WebP Forge Web</span><span>Seus arquivos nunca saem deste dispositivo.</span></footer>
 
       {showSettings && <SettingsPanel settings={settings} onChange={setSettings} onClose={() => setShowSettings(false)} />}
+      {comparedItem?.output && <ComparisonPanel name={comparedItem.file.name} originalUrl={comparedItem.previewUrl}
+        originalSize={comparedItem.file.size} output={comparedItem.output}
+        outputFormat={comparedItem.outputFormat ?? settings.outputFormat} onClose={() => setComparisonId(null)} />}
     </main>
   );
 }

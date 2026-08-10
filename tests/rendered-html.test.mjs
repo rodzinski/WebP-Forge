@@ -42,3 +42,17 @@ test("offers contain, crop and stretch fitting modes", async () => {
   assert.match(page, /settings\.fitMode === "crop"/);
   assert.match(page, /settings\.fitMode === "stretch"/);
 });
+
+test("offers local before-and-after comparison with size savings", async () => {
+  const [page, comparison] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../components/app/comparison-panel.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(page, /setComparisonId/);
+  assert.match(page, /output\?\.size/);
+  assert.match(comparison, /Antes e depois/);
+  assert.match(comparison, /URL\.createObjectURL\(output\)/);
+  assert.match(comparison, /output\.size/);
+  assert.doesNotMatch(comparison, /\bfetch\s*\(/);
+});
