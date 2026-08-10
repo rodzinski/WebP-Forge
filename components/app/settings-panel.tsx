@@ -63,6 +63,7 @@ export function SettingsPanel({ settings, onChange, onClose }: SettingsPanelProp
         </label>
         <label className="range-field"><span><b>Qualidade da saída</b><output>{settings.quality}%</output></span><input type="range" min="1" max="100" value={settings.quality} onChange={(event) => update({ quality: Number(event.target.value) })} /></label>
         <label className="select-field">Tema<select value={settings.theme} onChange={(event) => update({ theme: event.target.value as ConversionSettings["theme"] })}><option value="system">Seguir o sistema</option><option value="light">Claro</option><option value="dark">Escuro</option></select></label>
+        <div className="setting-note"><strong>Metadados protegidos</strong><p>A versão web remove EXIF, localização e outros metadados automaticamente durante a conversão pelo navegador.</p></div>
         <div className="setting-note"><strong>Processamento local</strong><p>O modo escolhido é aplicado no navegador. Suas imagens não são enviadas para nenhum servidor.</p></div>
         <button className="button primary full" onClick={onClose}>Salvar configurações</button>
       </section>

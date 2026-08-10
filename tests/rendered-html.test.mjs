@@ -56,3 +56,8 @@ test("offers local before-and-after comparison with size savings", async () => {
   assert.match(comparison, /output\.size/);
   assert.doesNotMatch(comparison, /\bfetch\s*\(/);
 });
+
+test("explains automatic metadata removal in the browser", async () => {
+  const settings = await readFile(new URL("../components/app/settings-panel.tsx", import.meta.url), "utf8");
+  assert.match(settings, /remove EXIF, localização e outros metadados automaticamente/);
+});
