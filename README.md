@@ -22,6 +22,7 @@ Use a versão pública em:
 - Comparação local antes/depois, com tamanho final e estimativa de economia.
 - Remoção automática de EXIF, localização e outros metadados no navegador.
 - Detecção de GIF/WebP animado com aviso explícito de exportação pelo primeiro quadro na versão web.
+- Perfis personalizados salvos localmente no navegador.
 - Drag and drop de múltiplos arquivos.
 - Temas claro, escuro e automático.
 - Interface responsiva para desktop, tablet e celular.

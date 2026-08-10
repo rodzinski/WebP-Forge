@@ -16,6 +16,8 @@ export type ConversionPreset = {
   quality: number;
 };
 
+export type CustomConversionProfile = Omit<ConversionSettings, "theme"> & { id: string; name: string };
+
 export const defaultSettings: ConversionSettings = {
   width: 128,
   height: 128,

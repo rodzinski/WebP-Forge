@@ -68,3 +68,10 @@ test("detects animated GIF and WebP inputs and warns about first-frame output", 
   assert.match(page, /0x41.*0x4e.*0x4d.*0x46/s);
   assert.match(page, /saída pelo 1º quadro/);
 });
+
+test("stores reusable custom conversion profiles locally", async () => {
+  const settings = await readFile(new URL("../components/app/settings-panel.tsx", import.meta.url), "utf8");
+  assert.match(settings, /webp-forge-custom-profiles/);
+  assert.match(settings, /saveProfile/);
+  assert.match(settings, /Excluir/);
+});

@@ -1,6 +1,7 @@
 "use client";
 
-import { conversionPresets, fitModeOptions, outputFormatOptions, type ConversionSettings } from "@/lib/conversion-settings";
+import { useEffect, useState } from "react";
+import { conversionPresets, fitModeOptions, outputFormatOptions, type ConversionSettings, type CustomConversionProfile } from "@/lib/conversion-settings";
 
 type SettingsPanelProps = {
   settings: ConversionSettings;
@@ -9,6 +10,25 @@ type SettingsPanelProps = {
 };
 
 export function SettingsPanel({ settings, onChange, onClose }: SettingsPanelProps) {
+  const [profiles, setProfiles] = useState<CustomConversionProfile[]>([]);
+  const [profileName, setProfileName] = useState("");
+
+  useEffect(() => {
+    try { setProfiles(JSON.parse(localStorage.getItem("webp-forge-custom-profiles") ?? "[]")); } catch { setProfiles([]); }
+  }, []);
+
+  function persistProfiles(next: CustomConversionProfile[]) {
+    setProfiles(next);
+    localStorage.setItem("webp-forge-custom-profiles", JSON.stringify(next));
+  }
+
+  function saveProfile() {
+    const name = profileName.trim();
+    if (!name) return;
+    const profile = { id: crypto.randomUUID(), name, width: settings.width, height: settings.height, quality: settings.quality, fitMode: settings.fitMode, outputFormat: settings.outputFormat };
+    persistProfiles([...profiles.filter((item) => item.name.toLowerCase() !== name.toLowerCase()), profile]);
+    setProfileName("");
+  }
   function update(values: Partial<ConversionSettings>) {
     onChange({ ...settings, ...values });
   }
@@ -38,6 +58,12 @@ export function SettingsPanel({ settings, onChange, onClose }: SettingsPanelProp
               );
             })}
           </div>
+        </fieldset>
+        <fieldset className="preset-fieldset custom-profiles">
+          <legend>Meus perfis</legend>
+          <p>Salve a configuração atual para reutilizar quando quiser.</p>
+          <div className="profile-create"><input value={profileName} maxLength={40} placeholder="Nome do perfil" onChange={(event) => setProfileName(event.target.value)} /><button type="button" className="button secondary" onClick={saveProfile} disabled={!profileName.trim()}>Salvar atual</button></div>
+          {profiles.length > 0 && <div className="profile-list">{profiles.map((profile) => <div key={profile.id}><button type="button" onClick={() => update(profile)}><strong>{profile.name}</strong><small>{profile.width} × {profile.height} · {profile.outputFormat.toUpperCase()} · {profile.quality}%</small></button><button type="button" className="profile-delete" onClick={() => persistProfiles(profiles.filter((item) => item.id !== profile.id))} aria-label={`Excluir ${profile.name}`}>×</button></div>)}</div>}
         </fieldset>
         <div className="field-grid">
           <label>Largura <div className="number-field"><input type="number" min="1" max="4096" value={settings.width} onChange={(event) => update({ width: Math.min(4096, Math.max(1, Number(event.target.value))) })} /><span>px</span></div></label>
