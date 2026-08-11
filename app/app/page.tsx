@@ -12,6 +12,7 @@ import { defaultSettings, type ConversionSettings } from "@/lib/conversion-setti
 import { encodeCanvas, outputName } from "@/lib/image-output";
 import { translate } from "@/lib/i18n";
 import { ImageWorkerClient } from "@/lib/image-worker-client";
+import { VirtualList } from "@/components/app/virtual-list";
 
 type ItemStatus = "Pronto" | "Convertendo" | "Concluído" | "Erro" | "Cancelado";
 
@@ -382,9 +383,9 @@ export default function WebPForge() {
                 <div><strong>{items.length} imagem(ns)</strong><span>{formatBytes(totalSize)} no total</span></div>
                 <button className="text-button" onClick={clearAll} disabled={isConverting}>{tr("clear")}</button>
               </div>
-              <div className="image-list">
-                {items.map((item) => (
-                  <article className="image-row" key={item.id}>
+              <VirtualList items={items} rowHeight={71} maxHeight={470} getKey={(item) => item.id} ariaLabel={`${items.length} imagem(ns)`}
+                renderItem={(item, index, style) => (
+                  <article className="image-row" key={item.id} style={style} role="listitem" aria-posinset={index + 1} aria-setsize={items.length}>
                     <Image src={item.previewUrl} alt="" width={48} height={48} unoptimized />
                     <div className="file-info"><strong title={item.file.name}>{item.file.name}</strong><span>{item.width} × {item.height} · {formatBytes(item.file.size)}{item.frameCount > 1 && ` · ${item.frameCount} quadros · saída pelo 1º quadro`}</span></div>
                     <span className={`status status-${item.status.toLowerCase().replace("í", "i")}`} title={item.error}>{item.status === "Pronto" ? tr("ready") : item.status === "Concluído" ? tr("completed") : item.status === "Erro" ? tr("error") : item.status === "Cancelado" ? tr("cancelled") : item.status}</span>
@@ -395,8 +396,7 @@ export default function WebPForge() {
                         : !isConverting && <button className="row-button remove" onClick={() => removeItem(item.id)} aria-label={`Remover ${item.file.name}`}>×</button>}
                     </div>
                   </article>
-                ))}
-              </div>
+                )} />
             </>
           )}
         </section>

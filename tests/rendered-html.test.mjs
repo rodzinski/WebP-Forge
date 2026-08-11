@@ -138,3 +138,14 @@ test("processes conversions in a Web Worker with a safe fallback", async () => {
   assert.match(worker, /OffscreenCanvas/);
   assert.match(worker, /transfer: \[buffer\]/);
 });
+
+test("virtualizes the image queue for very large batches", async () => {
+  const [page, virtualList] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../components/app/virtual-list.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /<VirtualList/);
+  assert.match(virtualList, /items\.slice\(range\.start, range\.end\)/);
+  assert.match(virtualList, /ResizeObserver/);
+  assert.match(virtualList, /aria-posinset|ariaLabel/);
+});
