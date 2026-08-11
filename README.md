@@ -30,6 +30,7 @@ Use a versão pública em:
 - Interface do conversor em português, inglês e espanhol.
 - Processamento em Web Worker para manter a interface responsiva em lotes grandes.
 - Lista virtualizada para navegar por milhares de arquivos com baixo custo de renderização.
+- Concorrência adaptativa baseada nos núcleos, memória e perfil de interação do dispositivo.
 - Drag and drop de múltiplos arquivos.
 - Temas claro, escuro e automático.
 - Interface responsiva para desktop, tablet e celular.

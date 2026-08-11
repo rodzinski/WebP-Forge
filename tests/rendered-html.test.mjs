@@ -149,3 +149,16 @@ test("virtualizes the image queue for very large batches", async () => {
   assert.match(virtualList, /ResizeObserver/);
   assert.match(virtualList, /aria-posinset|ariaLabel/);
 });
+
+test("adapts conversion concurrency to the device", async () => {
+  const [page, client] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../lib/image-worker-client.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(client, /navigator\.hardwareConcurrency/);
+  assert.match(client, /deviceMemory/);
+  assert.match(client, /pointer: coarse/);
+  assert.match(client, /Array\.from\(\{ length: concurrency \}/);
+  assert.match(page, /Promise\.all\(Array\.from/);
+  assert.match(page, /results\.get\(item\.id\)/);
+});

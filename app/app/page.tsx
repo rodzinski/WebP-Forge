@@ -219,10 +219,10 @@ export default function WebPForge() {
     setItems((current) => current.map((item) => item.id === id ? { ...item, status: "Cancelado" } : item));
   }
 
-  async function processImage(item: ImageItem) {
-    if (!ImageWorkerClient.isSupported()) return convertImage(item.file, settings);
+  async function processImage(item: ImageItem, activeSettings: ConversionSettings) {
+    if (!ImageWorkerClient.isSupported()) return convertImage(item.file, activeSettings);
     workerClient.current ??= new ImageWorkerClient();
-    return workerClient.current.convert(item.id, item.file, settings);
+    return workerClient.current.convert(item.id, item.file, activeSettings);
   }
 
   async function convertItems(targets: ImageItem[]) {
@@ -231,45 +231,66 @@ export default function WebPForge() {
     targets.forEach((item) => cancelledIds.current.delete(item.id));
     setReport(null);
     setMessage("Preparando conversão…");
+    const activeSettings = { ...settings };
+    const concurrency = ImageWorkerClient.isSupported()
+      ? (workerClient.current ??= new ImageWorkerClient()).concurrency
+      : 1;
     let success = 0;
-    const entries: ConversionReportEntry[] = [];
+    let processed = 0;
+    let cursor = 0;
+    const results = new Map<string, ConversionReportEntry>();
 
-    for (const item of targets) {
+    function record(entry: ConversionReportEntry) {
+      results.set(entry.id, entry);
+      processed += 1;
+      setMessage(`Convertendo ${processed} de ${targets.length}`);
+    }
+
+    async function processItem(item: ImageItem) {
       const startedAt = performance.now();
       if (cancelledIds.current.has(item.id)) {
-        entries.push({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: 0 });
-        continue;
+        record({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: 0 });
+        return;
       }
       setItems((current) => current.map((entry) => entry.id === item.id
         ? { ...entry, status: "Convertendo", error: undefined, output: undefined, outputFormat: undefined } : entry));
       try {
-        const output = await processImage(item);
+        const output = await processImage(item, activeSettings);
         if (cancelledIds.current.has(item.id)) {
-          entries.push({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: performance.now() - startedAt });
-          continue;
+          record({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: performance.now() - startedAt });
+          return;
         }
         success += 1;
         setItems((current) => current.map((entry) => entry.id === item.id
-          ? { ...entry, output, outputFormat: settings.outputFormat, status: "Concluído" } : entry));
-        entries.push({ id: item.id, name: item.file.name, status: "Concluído", sourceSize: item.file.size, outputSize: output.size, durationMs: performance.now() - startedAt });
-        setMessage(`Convertendo ${entries.length} de ${targets.length}`);
+          ? { ...entry, output, outputFormat: activeSettings.outputFormat, status: "Concluído" } : entry));
+        record({ id: item.id, name: item.file.name, status: "Concluído", sourceSize: item.file.size, outputSize: output.size, durationMs: performance.now() - startedAt });
       } catch (error) {
         if (cancelledIds.current.has(item.id)) {
-          entries.push({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: performance.now() - startedAt });
-          continue;
+          record({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: performance.now() - startedAt });
+          return;
         }
         const detail = error instanceof Error ? error.message : "Falha ao converter";
         setItems((current) => current.map((entry) => entry.id === item.id
           ? { ...entry, status: "Erro", error: detail } : entry));
-        entries.push({ id: item.id, name: item.file.name, status: "Erro", sourceSize: item.file.size, error: detail, durationMs: performance.now() - startedAt });
+        record({ id: item.id, name: item.file.name, status: "Erro", sourceSize: item.file.size, error: detail, durationMs: performance.now() - startedAt });
       }
-      await new Promise((resolve) => requestAnimationFrame(resolve));
     }
+
+    async function runQueue() {
+      while (cursor < targets.length) {
+        const item = targets[cursor++];
+        await processItem(item);
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+      }
+    }
+
+    await Promise.all(Array.from({ length: Math.min(concurrency, targets.length) }, runQueue));
+    const entries = targets.map((item) => results.get(item.id)).filter((entry): entry is ConversionReportEntry => entry !== undefined);
     setIsConverting(false);
     setReport(entries);
     const historyEntry: ConversionHistoryEntry = {
-      id: crypto.randomUUID(), createdAt: new Date().toISOString(), width: settings.width,
-      height: settings.height, quality: settings.quality, outputFormat: settings.outputFormat, items: entries,
+      id: crypto.randomUUID(), createdAt: new Date().toISOString(), width: activeSettings.width,
+      height: activeSettings.height, quality: activeSettings.quality, outputFormat: activeSettings.outputFormat, items: entries,
     };
     setHistory((current) => {
       const next = [historyEntry, ...current].slice(0, 50);
