@@ -101,6 +101,10 @@ export default function WebPForge() {
   const folderInput = useRef<HTMLInputElement>(null);
   const itemsRef = useRef<ImageItem[]>([]);
   const cancelledIds = useRef(new Set<string>());
+  const shortcutActions = useRef({
+    addImages: () => {}, addFolder: () => {}, convert: () => {},
+    settings: () => {}, history: () => {}, closeOverlay: () => {},
+  });
 
   useEffect(() => {
     const saved = localStorage.getItem("webp-forge-settings");
@@ -119,6 +123,25 @@ export default function WebPForge() {
 
   useEffect(() => { itemsRef.current = items; }, [items]);
   useEffect(() => () => { itemsRef.current.forEach((item) => URL.revokeObjectURL(item.previewUrl)); }, []);
+  useEffect(() => {
+    function handleShortcut(event: KeyboardEvent) {
+      if (event.key === "Escape") { shortcutActions.current.closeOverlay(); return; }
+      if (!event.ctrlKey && !event.metaKey) return;
+      if (event.key.toLowerCase() === "o") {
+        event.preventDefault();
+        if (event.shiftKey) shortcutActions.current.addFolder();
+        else shortcutActions.current.addImages();
+      } else if (event.key === "Enter") {
+        event.preventDefault(); shortcutActions.current.convert();
+      } else if (event.key === ",") {
+        event.preventDefault(); shortcutActions.current.settings();
+      } else if (event.key.toLowerCase() === "h") {
+        event.preventDefault(); shortcutActions.current.history();
+      }
+    }
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
 
   const completed = items.filter((item) => item.status === "Concluído").length;
   const failed = items.filter((item) => item.status === "Erro").length;
@@ -290,6 +313,15 @@ export default function WebPForge() {
     if (event.target.files) void addFiles(event.target.files);
     event.target.value = "";
   }
+
+  shortcutActions.current = {
+    addImages: () => fileInput.current?.click(),
+    addFolder: () => folderInput.current?.click(),
+    convert: convertAll,
+    settings: () => setShowSettings(true),
+    history: () => setShowHistory(true),
+    closeOverlay: () => { setShowSettings(false); setShowHistory(false); setComparisonId(null); setReport(null); },
+  };
 
   return (
     <main className="app-shell" onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }}

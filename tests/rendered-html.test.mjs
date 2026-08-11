@@ -104,3 +104,11 @@ test("stores and displays a private local conversion history", async () => {
   assert.match(history, /Conversões recentes/);
   assert.match(history, /Limpar histórico/);
 });
+
+test("supports keyboard shortcuts for the main workflow", async () => {
+  const page = await readFile(appPageUrl, "utf8");
+  assert.match(page, /handleShortcut/);
+  assert.match(page, /event\.shiftKey/);
+  assert.match(page, /shortcutActions/);
+  assert.match(page, /event\.key === "Enter"/);
+});

@@ -26,6 +26,7 @@ Use a versão pública em:
 - Reordenação do lote e cancelamento individual de itens.
 - Relatório detalhado por arquivo com repetição somente das falhas.
 - Histórico local de conversões com detalhes dos últimos lotes.
+- Atalhos de teclado para seleção, conversão, configurações e histórico.
 - Drag and drop de múltiplos arquivos.
 - Temas claro, escuro e automático.
 - Interface responsiva para desktop, tablet e celular.

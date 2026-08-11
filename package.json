@@ -1,6 +1,6 @@
 {
   "name": "webp-forge-web",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "private": true,
   "packageManager": "npm@11.6.2",
   "engines": {
