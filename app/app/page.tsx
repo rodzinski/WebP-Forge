@@ -10,6 +10,7 @@ import { ConversionReportPanel, type ConversionReportEntry } from "@/components/
 import { HistoryPanel, type ConversionHistoryEntry } from "@/components/app/history-panel";
 import { defaultSettings, type ConversionSettings } from "@/lib/conversion-settings";
 import { encodeCanvas, outputName } from "@/lib/image-output";
+import { translate } from "@/lib/i18n";
 
 type ItemStatus = "Pronto" | "Convertendo" | "Concluído" | "Erro" | "Cancelado";
 
@@ -101,6 +102,7 @@ export default function WebPForge() {
   const folderInput = useRef<HTMLInputElement>(null);
   const itemsRef = useRef<ImageItem[]>([]);
   const cancelledIds = useRef(new Set<string>());
+  const tr = (key: Parameters<typeof translate>[1]) => translate(settings.language, key);
   const shortcutActions = useRef({
     addImages: () => {}, addFolder: () => {}, convert: () => {},
     settings: () => {}, history: () => {}, closeOverlay: () => {},
@@ -119,6 +121,7 @@ export default function WebPForge() {
     if (!settingsLoaded) return;
     localStorage.setItem("webp-forge-settings", JSON.stringify(settings));
     document.documentElement.dataset.theme = settings.theme;
+    document.documentElement.lang = settings.language === "pt" ? "pt-BR" : settings.language;
   }, [settings, settingsLoaded]);
 
   useEffect(() => { itemsRef.current = items; }, [items]);
@@ -329,23 +332,23 @@ export default function WebPForge() {
       <header className="topbar">
         <div className="brand">
           <BrandMark size={40} priority />
-          <div><strong>WebP Forge</strong><span>Conversor de imagens</span></div>
+          <div><strong>WebP Forge</strong><span>{tr("imageConverter")}</span></div>
         </div>
-        <div className="privacy-pill"><span>●</span> Processamento local e privado</div>
-        <button className="icon-button" onClick={() => setShowHistory(true)} aria-label="Abrir histórico" title="Histórico">◷</button>
-        <button className="icon-button" onClick={() => setShowSettings(true)} aria-label="Abrir configurações" title="Configurações">⚙</button>
+        <div className="privacy-pill"><span>●</span> {tr("privacy")}</div>
+        <button className="icon-button" onClick={() => setShowHistory(true)} aria-label={tr("history")} title={tr("history")}>◷</button>
+        <button className="icon-button" onClick={() => setShowSettings(true)} aria-label={tr("settings")} title={tr("settings")}>⚙</button>
       </header>
 
       <section className="workspace">
         <div className="intro-row">
           <div>
-            <p className="eyebrow">CONVERSÃO EM LOTE</p>
-            <h1>Imagens perfeitas.<br /><em>Prontas para a web.</em></h1>
-            <p className="intro-copy">Converta várias imagens para WebP, AVIF, PNG, JPG ou ICO com tamanho uniforme e alta qualidade.</p>
+            <p className="eyebrow">{tr("eyebrow")}</p>
+            <h1>{tr("heroA")}<br /><em>{tr("heroB")}</em></h1>
+            <p className="intro-copy">{tr("intro")}</p>
           </div>
           <div className="actions">
-            <button className="button secondary" onClick={() => fileInput.current?.click()}>＋ Adicionar imagens</button>
-            <button className="button ghost" onClick={() => folderInput.current?.click()}>▣ Adicionar pasta</button>
+            <button className="button secondary" onClick={() => fileInput.current?.click()}>＋ {tr("addImages")}</button>
+            <button className="button ghost" onClick={() => folderInput.current?.click()}>▣ {tr("addFolder")}</button>
             <input ref={fileInput} type="file" accept=".png,.jpg,.jpeg,.jfif,.webp,.avif,.gif,.bmp" multiple hidden onChange={handleInput} />
             <input ref={(node) => { folderInput.current = node; node?.setAttribute("webkitdirectory", ""); }} type="file" multiple hidden onChange={handleInput} />
           </div>
@@ -355,22 +358,22 @@ export default function WebPForge() {
           {!items.length ? (
             <button className="empty-state" onClick={() => fileInput.current?.click()}>
               <span className="drop-icon">⇩</span>
-              <strong>Solte suas imagens aqui</strong>
-              <span>ou clique para selecionar arquivos</span>
+              <strong>{tr("drop")}</strong>
+              <span>{tr("select")}</span>
               <small>PNG, JPG, JPEG, JFIF, WebP, AVIF, GIF e BMP</small>
             </button>
           ) : (
             <>
               <div className="list-toolbar">
                 <div><strong>{items.length} imagem(ns)</strong><span>{formatBytes(totalSize)} no total</span></div>
-                <button className="text-button" onClick={clearAll} disabled={isConverting}>Limpar lista</button>
+                <button className="text-button" onClick={clearAll} disabled={isConverting}>{tr("clear")}</button>
               </div>
               <div className="image-list">
                 {items.map((item) => (
                   <article className="image-row" key={item.id}>
                     <Image src={item.previewUrl} alt="" width={48} height={48} unoptimized />
                     <div className="file-info"><strong title={item.file.name}>{item.file.name}</strong><span>{item.width} × {item.height} · {formatBytes(item.file.size)}{item.frameCount > 1 && ` · ${item.frameCount} quadros · saída pelo 1º quadro`}</span></div>
-                    <span className={`status status-${item.status.toLowerCase().replace("í", "i")}`} title={item.error}>{item.status}</span>
+                    <span className={`status status-${item.status.toLowerCase().replace("í", "i")}`} title={item.error}>{item.status === "Pronto" ? tr("ready") : item.status === "Concluído" ? tr("completed") : item.status === "Erro" ? tr("error") : item.status === "Cancelado" ? tr("cancelled") : item.status}</span>
                     <div className="row-actions">
                       {!isConverting && <><button className="row-button" onClick={() => moveItem(item.id, -1)} aria-label={`Mover ${item.file.name} para cima`}>↑</button><button className="row-button" onClick={() => moveItem(item.id, 1)} aria-label={`Mover ${item.file.name} para baixo`}>↓</button></>}
                       {isConverting && item.status !== "Concluído" && item.status !== "Cancelado" && <button className="row-button cancel" onClick={() => cancelItem(item.id)} aria-label={`Cancelar ${item.file.name}`}>×</button>}
@@ -385,26 +388,26 @@ export default function WebPForge() {
         </section>
 
         <section className="conversion-bar">
-          <div className="preset-summary"><span>SAÍDA</span><strong>{settings.width} × {settings.height}px</strong><i></i><strong>{settings.fitMode === "contain" ? "Conter" : settings.fitMode === "crop" ? "Recortar" : "Esticar"}</strong><i></i><strong>{settings.outputFormat.toUpperCase()} · {settings.quality}%</strong></div>
+          <div className="preset-summary"><span>{tr("output")}</span><strong>{settings.width} × {settings.height}px</strong><i></i><strong>{settings.fitMode === "contain" ? "Conter" : settings.fitMode === "crop" ? "Recortar" : "Esticar"}</strong><i></i><strong>{settings.outputFormat.toUpperCase()} · {settings.quality}%</strong></div>
           <div className="progress-copy"><span>{message}{outputTotal > 0 && ` · ${formatBytes(totalSize)} → ${formatBytes(outputTotal)}`}</span>{items.length > 0 && <small>{Math.round(progress)}%</small>}</div>
           <div className="progress-track"><span style={{ width: `${progress}%` }} /></div>
           <div className="conversion-actions">
-            {completed > 0 && !isConverting && <button className="button secondary" onClick={downloadAll}>↓ Baixar ZIP</button>}
+            {completed > 0 && !isConverting && <button className="button secondary" onClick={downloadAll}>↓ {tr("download")}</button>}
             <button className="button primary" onClick={convertAll} disabled={!items.length || isConverting}>
-              {isConverting ? "Convertendo…" : `Converter para ${settings.outputFormat.toUpperCase()}`}
+              {isConverting ? tr("converting") : `${tr("convert")} ${settings.outputFormat.toUpperCase()}`}
             </button>
           </div>
         </section>
       </section>
 
-      <footer><span>WebP Forge Web</span><span>Seus arquivos nunca saem deste dispositivo.</span></footer>
+      <footer><span>WebP Forge Web</span><span>{tr("footer")}</span></footer>
 
       {showSettings && <SettingsPanel settings={settings} onChange={setSettings} onClose={() => setShowSettings(false)} />}
       {comparedItem?.output && <ComparisonPanel name={comparedItem.file.name} originalUrl={comparedItem.previewUrl}
         originalSize={comparedItem.file.size} output={comparedItem.output}
-        outputFormat={comparedItem.outputFormat ?? settings.outputFormat} onClose={() => setComparisonId(null)} />}
-      {report && <ConversionReportPanel entries={report} onClose={() => setReport(null)} onRetryFailures={retryFailures} />}
-      {showHistory && <HistoryPanel entries={history} onClear={clearHistory} onClose={() => setShowHistory(false)} />}
+        outputFormat={comparedItem.outputFormat ?? settings.outputFormat} locale={settings.language} onClose={() => setComparisonId(null)} />}
+      {report && <ConversionReportPanel entries={report} locale={settings.language} onClose={() => setReport(null)} onRetryFailures={retryFailures} />}
+      {showHistory && <HistoryPanel entries={history} locale={settings.language} onClear={clearHistory} onClose={() => setShowHistory(false)} />}
     </main>
   );
 }

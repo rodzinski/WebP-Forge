@@ -51,7 +51,7 @@ test("offers local before-and-after comparison with size savings", async () => {
 
   assert.match(page, /setComparisonId/);
   assert.match(page, /output\?\.size/);
-  assert.match(comparison, /Antes e depois/);
+  assert.match(comparison, /beforeAfter/);
   assert.match(comparison, /URL\.createObjectURL\(output\)/);
   assert.match(comparison, /output\.size/);
   assert.doesNotMatch(comparison, /\bfetch\s*\(/);
@@ -90,8 +90,8 @@ test("shows a detailed report and retries only failed items", async () => {
   ]);
   assert.match(page, /retryFailures/);
   assert.match(page, /ConversionReportPanel/);
-  assert.match(report, /Tentar novamente somente as falhas/);
-  assert.match(report, /Copiar relatório/);
+  assert.match(report, /tr\("retry"\)/);
+  assert.match(report, /tr\("copyReport"\)/);
 });
 
 test("stores and displays a private local conversion history", async () => {
@@ -101,8 +101,8 @@ test("stores and displays a private local conversion history", async () => {
   ]);
   assert.match(page, /webp-forge-history/);
   assert.match(page, /HistoryPanel/);
-  assert.match(history, /Conversões recentes/);
-  assert.match(history, /Limpar histórico/);
+  assert.match(history, /tr\("recent"\)/);
+  assert.match(history, /tr\("clearHistory"\)/);
 });
 
 test("supports keyboard shortcuts for the main workflow", async () => {
@@ -111,4 +111,17 @@ test("supports keyboard shortcuts for the main workflow", async () => {
   assert.match(page, /event\.shiftKey/);
   assert.match(page, /shortcutActions/);
   assert.match(page, /event\.key === "Enter"/);
+});
+
+test("supports Portuguese, English and Spanish", async () => {
+  const [page, settings, i18n] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../components/app/settings-panel.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../lib/i18n.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /settings\.language/);
+  assert.match(settings, /Português/);
+  assert.match(settings, /English/);
+  assert.match(settings, /Español/);
+  assert.match(i18n, /CONVERSIÓN POR LOTES/);
 });

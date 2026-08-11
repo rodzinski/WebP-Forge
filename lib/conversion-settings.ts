@@ -5,6 +5,7 @@ export type ConversionSettings = {
   fitMode: "contain" | "crop" | "stretch";
   outputFormat: "webp" | "avif" | "png" | "jpg" | "ico";
   theme: "system" | "light" | "dark";
+  language: "pt" | "en" | "es";
 };
 
 export type ConversionPreset = {
@@ -16,7 +17,7 @@ export type ConversionPreset = {
   quality: number;
 };
 
-export type CustomConversionProfile = Omit<ConversionSettings, "theme"> & { id: string; name: string };
+export type CustomConversionProfile = Omit<ConversionSettings, "theme" | "language"> & { id: string; name: string };
 
 export const defaultSettings: ConversionSettings = {
   width: 128,
@@ -25,6 +26,7 @@ export const defaultSettings: ConversionSettings = {
   fitMode: "contain",
   outputFormat: "webp",
   theme: "system",
+  language: "pt",
 };
 
 export const conversionPresets: readonly ConversionPreset[] = [

@@ -27,6 +27,7 @@ Use a versão pública em:
 - Relatório detalhado por arquivo com repetição somente das falhas.
 - Histórico local de conversões com detalhes dos últimos lotes.
 - Atalhos de teclado para seleção, conversão, configurações e histórico.
+- Interface do conversor em português, inglês e espanhol.
 - Drag and drop de múltiplos arquivos.
 - Temas claro, escuro e automático.
 - Interface responsiva para desktop, tablet e celular.
