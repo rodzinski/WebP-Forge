@@ -6,6 +6,7 @@ import Image from "next/image";
 import { BrandMark } from "@/components/brand-mark";
 import { SettingsPanel } from "@/components/app/settings-panel";
 import { ComparisonPanel } from "@/components/app/comparison-panel";
+import { ConversionReportPanel, type ConversionReportEntry } from "@/components/app/conversion-report-panel";
 import { defaultSettings, type ConversionSettings } from "@/lib/conversion-settings";
 import { encodeCanvas, outputName } from "@/lib/image-output";
 
@@ -91,6 +92,7 @@ export default function WebPForge() {
   const [isDragging, setIsDragging] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [comparisonId, setComparisonId] = useState<string | null>(null);
+  const [report, setReport] = useState<ConversionReportEntry[] | null>(null);
   const [message, setMessage] = useState("Adicione imagens para começar");
   const fileInput = useRef<HTMLInputElement>(null);
   const folderInput = useRef<HTMLInputElement>(null);
@@ -182,32 +184,55 @@ export default function WebPForge() {
     setItems((current) => current.map((item) => item.id === id ? { ...item, status: "Cancelado" } : item));
   }
 
-  async function convertAll() {
-    if (!items.length || isConverting) return;
+  async function convertItems(targets: ImageItem[]) {
+    if (!targets.length || isConverting) return;
     setIsConverting(true);
-    cancelledIds.current.clear();
+    targets.forEach((item) => cancelledIds.current.delete(item.id));
+    setReport(null);
     setMessage("Preparando conversão…");
     let success = 0;
+    const entries: ConversionReportEntry[] = [];
 
-    for (const item of items) {
-      if (cancelledIds.current.has(item.id)) continue;
+    for (const item of targets) {
+      const startedAt = performance.now();
+      if (cancelledIds.current.has(item.id)) {
+        entries.push({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: 0 });
+        continue;
+      }
       setItems((current) => current.map((entry) => entry.id === item.id
-        ? { ...entry, status: "Convertendo", error: undefined } : entry));
+        ? { ...entry, status: "Convertendo", error: undefined, output: undefined, outputFormat: undefined } : entry));
       try {
         const output = await convertImage(item.file, settings);
-        if (cancelledIds.current.has(item.id)) continue;
+        if (cancelledIds.current.has(item.id)) {
+          entries.push({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: performance.now() - startedAt });
+          continue;
+        }
         success += 1;
         setItems((current) => current.map((entry) => entry.id === item.id
           ? { ...entry, output, outputFormat: settings.outputFormat, status: "Concluído" } : entry));
-        setMessage(`Convertendo ${success} de ${items.length}`);
+        entries.push({ id: item.id, name: item.file.name, status: "Concluído", sourceSize: item.file.size, outputSize: output.size, durationMs: performance.now() - startedAt });
+        setMessage(`Convertendo ${entries.length} de ${targets.length}`);
       } catch (error) {
+        const detail = error instanceof Error ? error.message : "Falha ao converter";
         setItems((current) => current.map((entry) => entry.id === item.id
-          ? { ...entry, status: "Erro", error: error instanceof Error ? error.message : "Falha ao converter" } : entry));
+          ? { ...entry, status: "Erro", error: detail } : entry));
+        entries.push({ id: item.id, name: item.file.name, status: "Erro", sourceSize: item.file.size, error: detail, durationMs: performance.now() - startedAt });
       }
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
     setIsConverting(false);
-    setMessage(`${success} de ${items.length} imagem(ns) convertida(s)`);
+    setReport(entries);
+    setMessage(`${success} de ${targets.length} imagem(ns) convertida(s)`);
+  }
+
+  function convertAll() {
+    void convertItems(items);
+  }
+
+  function retryFailures() {
+    const failedIds = new Set(report?.filter((entry) => entry.status === "Erro").map((entry) => entry.id));
+    const failedItems = items.filter((item) => failedIds.has(item.id));
+    void convertItems(failedItems);
   }
 
   async function downloadAll() {
@@ -326,6 +351,7 @@ export default function WebPForge() {
       {comparedItem?.output && <ComparisonPanel name={comparedItem.file.name} originalUrl={comparedItem.previewUrl}
         originalSize={comparedItem.file.size} output={comparedItem.output}
         outputFormat={comparedItem.outputFormat ?? settings.outputFormat} onClose={() => setComparisonId(null)} />}
+      {report && <ConversionReportPanel entries={report} onClose={() => setReport(null)} onRetryFailures={retryFailures} />}
     </main>
   );
 }

@@ -82,3 +82,14 @@ test("reorders and cancels individual batch items", async () => {
   assert.match(page, /cancelItem/);
   assert.match(page, /cancelledIds/);
 });
+
+test("shows a detailed report and retries only failed items", async () => {
+  const [page, report] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../components/app/conversion-report-panel.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /retryFailures/);
+  assert.match(page, /ConversionReportPanel/);
+  assert.match(report, /Tentar novamente somente as falhas/);
+  assert.match(report, /Copiar relatório/);
+});
