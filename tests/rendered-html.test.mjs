@@ -93,3 +93,14 @@ test("shows a detailed report and retries only failed items", async () => {
   assert.match(report, /Tentar novamente somente as falhas/);
   assert.match(report, /Copiar relatório/);
 });
+
+test("stores and displays a private local conversion history", async () => {
+  const [page, history] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../components/app/history-panel.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /webp-forge-history/);
+  assert.match(page, /HistoryPanel/);
+  assert.match(history, /Conversões recentes/);
+  assert.match(history, /Limpar histórico/);
+});

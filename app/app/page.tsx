@@ -7,6 +7,7 @@ import { BrandMark } from "@/components/brand-mark";
 import { SettingsPanel } from "@/components/app/settings-panel";
 import { ComparisonPanel } from "@/components/app/comparison-panel";
 import { ConversionReportPanel, type ConversionReportEntry } from "@/components/app/conversion-report-panel";
+import { HistoryPanel, type ConversionHistoryEntry } from "@/components/app/history-panel";
 import { defaultSettings, type ConversionSettings } from "@/lib/conversion-settings";
 import { encodeCanvas, outputName } from "@/lib/image-output";
 
@@ -93,6 +94,8 @@ export default function WebPForge() {
   const [showSettings, setShowSettings] = useState(false);
   const [comparisonId, setComparisonId] = useState<string | null>(null);
   const [report, setReport] = useState<ConversionReportEntry[] | null>(null);
+  const [history, setHistory] = useState<ConversionHistoryEntry[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const [message, setMessage] = useState("Adicione imagens para começar");
   const fileInput = useRef<HTMLInputElement>(null);
   const folderInput = useRef<HTMLInputElement>(null);
@@ -104,6 +107,7 @@ export default function WebPForge() {
     if (saved) {
       try { setSettings({ ...defaultSettings, ...JSON.parse(saved) }); } catch { /* preferência inválida */ }
     }
+    try { setHistory(JSON.parse(localStorage.getItem("webp-forge-history") ?? "[]")); } catch { setHistory([]); }
     setSettingsLoaded(true);
   }, []);
 
@@ -222,6 +226,15 @@ export default function WebPForge() {
     }
     setIsConverting(false);
     setReport(entries);
+    const historyEntry: ConversionHistoryEntry = {
+      id: crypto.randomUUID(), createdAt: new Date().toISOString(), width: settings.width,
+      height: settings.height, quality: settings.quality, outputFormat: settings.outputFormat, items: entries,
+    };
+    setHistory((current) => {
+      const next = [historyEntry, ...current].slice(0, 50);
+      localStorage.setItem("webp-forge-history", JSON.stringify(next));
+      return next;
+    });
     setMessage(`${success} de ${targets.length} imagem(ns) convertida(s)`);
   }
 
@@ -233,6 +246,12 @@ export default function WebPForge() {
     const failedIds = new Set(report?.filter((entry) => entry.status === "Erro").map((entry) => entry.id));
     const failedItems = items.filter((item) => failedIds.has(item.id));
     void convertItems(failedItems);
+  }
+
+  function clearHistory() {
+    if (!window.confirm("Deseja apagar todo o histórico local?")) return;
+    localStorage.removeItem("webp-forge-history");
+    setHistory([]);
   }
 
   async function downloadAll() {
@@ -281,6 +300,7 @@ export default function WebPForge() {
           <div><strong>WebP Forge</strong><span>Conversor de imagens</span></div>
         </div>
         <div className="privacy-pill"><span>●</span> Processamento local e privado</div>
+        <button className="icon-button" onClick={() => setShowHistory(true)} aria-label="Abrir histórico" title="Histórico">◷</button>
         <button className="icon-button" onClick={() => setShowSettings(true)} aria-label="Abrir configurações" title="Configurações">⚙</button>
       </header>
 
@@ -352,6 +372,7 @@ export default function WebPForge() {
         originalSize={comparedItem.file.size} output={comparedItem.output}
         outputFormat={comparedItem.outputFormat ?? settings.outputFormat} onClose={() => setComparisonId(null)} />}
       {report && <ConversionReportPanel entries={report} onClose={() => setReport(null)} onRetryFailures={retryFailures} />}
+      {showHistory && <HistoryPanel entries={history} onClear={clearHistory} onClose={() => setShowHistory(false)} />}
     </main>
   );
 }
