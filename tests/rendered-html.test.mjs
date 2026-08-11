@@ -125,3 +125,16 @@ test("supports Portuguese, English and Spanish", async () => {
   assert.match(settings, /Español/);
   assert.match(i18n, /CONVERSIÓN POR LOTES/);
 });
+
+test("processes conversions in a Web Worker with a safe fallback", async () => {
+  const [page, client, worker] = await Promise.all([
+    readFile(appPageUrl, "utf8"),
+    readFile(new URL("../lib/image-worker-client.ts", import.meta.url), "utf8"),
+    readFile(new URL("../workers/image-conversion.worker.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /ImageWorkerClient\.isSupported/);
+  assert.match(page, /return convertImage/);
+  assert.match(client, /new Worker/);
+  assert.match(worker, /OffscreenCanvas/);
+  assert.match(worker, /transfer: \[buffer\]/);
+});

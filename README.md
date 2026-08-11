@@ -28,6 +28,7 @@ Use a versão pública em:
 - Histórico local de conversões com detalhes dos últimos lotes.
 - Atalhos de teclado para seleção, conversão, configurações e histórico.
 - Interface do conversor em português, inglês e espanhol.
+- Processamento em Web Worker para manter a interface responsiva em lotes grandes.
 - Drag and drop de múltiplos arquivos.
 - Temas claro, escuro e automático.
 - Interface responsiva para desktop, tablet e celular.

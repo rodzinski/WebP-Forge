@@ -11,6 +11,7 @@ import { HistoryPanel, type ConversionHistoryEntry } from "@/components/app/hist
 import { defaultSettings, type ConversionSettings } from "@/lib/conversion-settings";
 import { encodeCanvas, outputName } from "@/lib/image-output";
 import { translate } from "@/lib/i18n";
+import { ImageWorkerClient } from "@/lib/image-worker-client";
 
 type ItemStatus = "Pronto" | "Convertendo" | "Concluído" | "Erro" | "Cancelado";
 
@@ -102,6 +103,7 @@ export default function WebPForge() {
   const folderInput = useRef<HTMLInputElement>(null);
   const itemsRef = useRef<ImageItem[]>([]);
   const cancelledIds = useRef(new Set<string>());
+  const workerClient = useRef<ImageWorkerClient | null>(null);
   const tr = (key: Parameters<typeof translate>[1]) => translate(settings.language, key);
   const shortcutActions = useRef({
     addImages: () => {}, addFolder: () => {}, convert: () => {},
@@ -126,6 +128,7 @@ export default function WebPForge() {
 
   useEffect(() => { itemsRef.current = items; }, [items]);
   useEffect(() => () => { itemsRef.current.forEach((item) => URL.revokeObjectURL(item.previewUrl)); }, []);
+  useEffect(() => () => workerClient.current?.dispose(), []);
   useEffect(() => {
     function handleShortcut(event: KeyboardEvent) {
       if (event.key === "Escape") { shortcutActions.current.closeOverlay(); return; }
@@ -211,7 +214,14 @@ export default function WebPForge() {
 
   function cancelItem(id: string) {
     cancelledIds.current.add(id);
+    workerClient.current?.cancel(id);
     setItems((current) => current.map((item) => item.id === id ? { ...item, status: "Cancelado" } : item));
+  }
+
+  async function processImage(item: ImageItem) {
+    if (!ImageWorkerClient.isSupported()) return convertImage(item.file, settings);
+    workerClient.current ??= new ImageWorkerClient();
+    return workerClient.current.convert(item.id, item.file, settings);
   }
 
   async function convertItems(targets: ImageItem[]) {
@@ -232,7 +242,7 @@ export default function WebPForge() {
       setItems((current) => current.map((entry) => entry.id === item.id
         ? { ...entry, status: "Convertendo", error: undefined, output: undefined, outputFormat: undefined } : entry));
       try {
-        const output = await convertImage(item.file, settings);
+        const output = await processImage(item);
         if (cancelledIds.current.has(item.id)) {
           entries.push({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: performance.now() - startedAt });
           continue;
@@ -243,6 +253,10 @@ export default function WebPForge() {
         entries.push({ id: item.id, name: item.file.name, status: "Concluído", sourceSize: item.file.size, outputSize: output.size, durationMs: performance.now() - startedAt });
         setMessage(`Convertendo ${entries.length} de ${targets.length}`);
       } catch (error) {
+        if (cancelledIds.current.has(item.id)) {
+          entries.push({ id: item.id, name: item.file.name, status: "Cancelado", sourceSize: item.file.size, durationMs: performance.now() - startedAt });
+          continue;
+        }
         const detail = error instanceof Error ? error.message : "Falha ao converter";
         setItems((current) => current.map((entry) => entry.id === item.id
           ? { ...entry, status: "Erro", error: detail } : entry));
