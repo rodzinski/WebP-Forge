@@ -162,3 +162,17 @@ test("adapts conversion concurrency to the device", async () => {
   assert.match(page, /Promise\.all\(Array\.from/);
   assert.match(page, /results\.get\(item\.id\)/);
 });
+
+test("benchmarks quality, memory and conversion speed locally", async () => {
+  const [page, benchmark] = await Promise.all([
+    readFile(new URL("../app/benchmark/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../lib/image-benchmark.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /runImageBenchmark/);
+  assert.match(await readFile(appPageUrl, "utf8"), /href="\/benchmark"/);
+  assert.match(page, /PSNR/);
+  assert.match(benchmark, /calculatePsnr/);
+  assert.match(benchmark, /usedJSHeapSize/);
+  assert.match(benchmark, /megapixelsPerSecond/);
+  assert.match(benchmark, /compressionRatio/);
+});

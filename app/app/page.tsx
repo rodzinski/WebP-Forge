@@ -3,6 +3,7 @@
 import { ChangeEvent, DragEvent, useEffect, useMemo, useRef, useState } from "react";
 import { downloadZip } from "client-zip";
 import Image from "next/image";
+import Link from "next/link";
 import { BrandMark } from "@/components/brand-mark";
 import { SettingsPanel } from "@/components/app/settings-panel";
 import { ComparisonPanel } from "@/components/app/comparison-panel";
@@ -435,7 +436,7 @@ export default function WebPForge() {
         </section>
       </section>
 
-      <footer><span>WebP Forge Web</span><span>{tr("footer")}</span></footer>
+      <footer><span>WebP Forge Web</span><span>{tr("footer")}</span><Link href="/benchmark">Benchmark</Link></footer>
 
       {showSettings && <SettingsPanel settings={settings} onChange={setSettings} onClose={() => setShowSettings(false)} />}
       {comparedItem?.output && <ComparisonPanel name={comparedItem.file.name} originalUrl={comparedItem.previewUrl}
