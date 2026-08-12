@@ -17,14 +17,14 @@ export function SiteFooter() {
           <div>
             <strong>Produto</strong>
             <Link href="/app">Conversor</Link>
-            <a href="#windows">Aplicativo Windows</a>
-            <a href="#recursos">Recursos</a>
-            <a href="#precos">Preços</a>
+            <a href="/#windows">Aplicativo Windows</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#precos">Preços</a>
           </div>
           <div>
             <strong>Informações</strong>
-            <a href="#faq">FAQ</a>
-            <span>Privacidade local</span>
+            <a href="/#faq">FAQ</a>
+            <Link href="/privacy">Política de Privacidade</Link>
             <span>Versão web 1.0</span>
           </div>
         </div>

@@ -24,6 +24,19 @@ test("keeps image conversion on the device", async () => {
   assert.match(output, /import\("@jsquash\/avif\/encode\.js"\)/);
 });
 
+test("publishes a complete privacy policy and links it from the footer", async () => {
+  const [privacy, footer] = await Promise.all([
+    readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/site-footer.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(privacy, /Política de Privacidade/);
+  assert.match(privacy, /não são enviadas aos servidores do WebP Forge/);
+  assert.match(privacy, /Cloudflare/);
+  assert.match(privacy, /12 de agosto de 2026/);
+  assert.match(footer, /href="\/privacy"/);
+});
+
 test("exports WebP, AVIF, PNG, JPG and ICO", async () => {
   const settings = await readFile(new URL("../lib/conversion-settings.ts", import.meta.url), "utf8");
   assert.match(settings, /"webp" \| "avif" \| "png" \| "jpg" \| "ico"/);
