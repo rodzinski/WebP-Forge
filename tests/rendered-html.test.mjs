@@ -31,6 +31,19 @@ test("offers portable, installer and ARM64 Windows downloads", async () => {
   assert.match(download, /WebP-Forge-portable-win-arm64\.zip/);
 });
 
+test("synchronizes the current version and changelog with GitHub releases", async () => {
+  const [source, changelog, download] = await Promise.all([
+    readFile(new URL("../lib/github-releases.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/changelog/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/desktop-download.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(source, /api\.github\.com\/repos\/rodzinski\/WebP-Forge\/releases/);
+  assert.match(source, /replace\(\/\^v\\\.\/i, "v"\)/);
+  assert.match(changelog, /<ReleaseList \/>/);
+  assert.match(download, /<ReleaseVersion \/>/);
+  assert.doesNotMatch(download, /versão 1\.\d+\.\d+/);
+});
+
 test("publishes a complete privacy policy and links it from the footer", async () => {
   const [privacy, footer] = await Promise.all([
     readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),

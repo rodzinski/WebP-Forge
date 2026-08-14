@@ -2,6 +2,7 @@ import { Check, Cpu, Download, Gauge, MonitorDown, PackageCheck, ShieldCheck } f
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { BrandMark } from "@/components/brand-mark";
+import { ReleaseVersion } from "@/components/release-version";
 
 const portableX64Url =
   "https://github.com/rodzinski/WebP-Forge/releases/latest/download/WebP-Forge-win-x64.zip";
@@ -34,7 +35,7 @@ export function DesktopDownload() {
           <a href={installerX64Url}><PackageCheck className="size-3.5" /><span><strong>Instalador x64</strong><small>Pode exibir aviso do SmartScreen</small></span></a>
           <a href={portableArm64Url}><Cpu className="size-3.5" /><span><strong>Portátil ARM64</strong><small>Windows em Snapdragon</small></span></a>
         </div>
-        <span className="desktop-meta">Windows 10/11 · versão 1.15.0 · processamento local</span>
+        <span className="desktop-meta">Windows 10/11 · <ReleaseVersion /> · processamento local</span>
       </Reveal>
 
       <Reveal className="desktop-preview" delay={0.1}>

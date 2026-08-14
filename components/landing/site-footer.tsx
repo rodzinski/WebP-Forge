@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/brand-mark";
+import { ReleaseVersion } from "@/components/release-version";
 
 export function SiteFooter() {
   return (
@@ -17,15 +18,16 @@ export function SiteFooter() {
           <div>
             <strong>Produto</strong>
             <Link href="/app">Conversor</Link>
-            <a href="/#windows">Aplicativo Windows</a>
-            <a href="/#recursos">Recursos</a>
-            <a href="/#precos">Preços</a>
+            <Link href="/#windows">Aplicativo Windows</Link>
+            <Link href="/#recursos">Recursos</Link>
+            <Link href="/#precos">Preços</Link>
+            <Link href="/changelog">Changelog</Link>
           </div>
           <div>
             <strong>Informações</strong>
-            <a href="/#faq">FAQ</a>
+            <Link href="/#faq">FAQ</Link>
             <Link href="/privacy">Política de Privacidade</Link>
-            <span>Versão web 1.0</span>
+            <span>Aplicativo <ReleaseVersion /></span>
           </div>
         </div>
       </div>
