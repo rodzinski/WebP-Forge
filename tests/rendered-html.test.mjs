@@ -24,6 +24,13 @@ test("keeps image conversion on the device", async () => {
   assert.match(output, /import\("@jsquash\/avif\/encode\.js"\)/);
 });
 
+test("offers portable, installer and ARM64 Windows downloads", async () => {
+  const download = await readFile(new URL("../components/landing/desktop-download.tsx", import.meta.url), "utf8");
+  assert.match(download, /WebP-Forge-win-x64\.zip/);
+  assert.match(download, /WebP-Forge-Setup-win-x64\.exe/);
+  assert.match(download, /WebP-Forge-portable-win-arm64\.zip/);
+});
+
 test("publishes a complete privacy policy and links it from the footer", async () => {
   const [privacy, footer] = await Promise.all([
     readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),
@@ -33,7 +40,9 @@ test("publishes a complete privacy policy and links it from the footer", async (
   assert.match(privacy, /Política de Privacidade/);
   assert.match(privacy, /não são enviadas aos servidores do WebP Forge/);
   assert.match(privacy, /Cloudflare/);
-  assert.match(privacy, /12 de agosto de 2026/);
+  assert.match(privacy, /14 de agosto de 2026/);
+  assert.match(privacy, /API pública do GitHub/);
+  assert.match(privacy, /Imagens, histórico e configurações não são enviados/);
   assert.match(footer, /href="\/privacy"/);
 });
 

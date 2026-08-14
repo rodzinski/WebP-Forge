@@ -1,10 +1,14 @@
-import { Check, Download, Gauge, MonitorDown, ShieldCheck } from "lucide-react";
+import { Check, Cpu, Download, Gauge, MonitorDown, PackageCheck, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { BrandMark } from "@/components/brand-mark";
 
-const downloadUrl =
+const portableX64Url =
   "https://github.com/rodzinski/WebP-Forge/releases/latest/download/WebP-Forge-win-x64.zip";
+const portableArm64Url =
+  "https://github.com/rodzinski/WebP-Forge/releases/latest/download/WebP-Forge-portable-win-arm64.zip";
+const installerX64Url =
+  "https://github.com/rodzinski/WebP-Forge/releases/latest/download/WebP-Forge-Setup-win-x64.exe";
 
 const benefits = [
   "Conversão em lote sem limites",
@@ -22,11 +26,15 @@ export function DesktopDownload() {
         <ul>{benefits.map((benefit) => <li key={benefit}><Check className="size-4" />{benefit}</li>)}</ul>
         <div className="desktop-actions">
           <Button asChild variant="accent" size="lg">
-            <a href={downloadUrl} aria-label="Baixar WebP Forge para Windows x64"><Download className="size-4" /> Baixar para Windows</a>
+            <a href={portableX64Url} aria-label="Baixar WebP Forge portátil para Windows x64"><Download className="size-4" /> Baixar portátil x64</a>
           </Button>
           <a className="desktop-release-link" href="https://github.com/rodzinski/WebP-Forge/releases/latest" target="_blank" rel="noreferrer">Ver notas da versão <span aria-hidden="true">↗</span></a>
         </div>
-        <span className="desktop-meta">Windows 10/11 · x64 · v1.11.0 · 82 MB</span>
+        <div className="desktop-download-options" aria-label="Outras versões para Windows">
+          <a href={installerX64Url}><PackageCheck className="size-3.5" /><span><strong>Instalador x64</strong><small>Pode exibir aviso do SmartScreen</small></span></a>
+          <a href={portableArm64Url}><Cpu className="size-3.5" /><span><strong>Portátil ARM64</strong><small>Windows em Snapdragon</small></span></a>
+        </div>
+        <span className="desktop-meta">Windows 10/11 · versão 1.15.0 · processamento local</span>
       </Reveal>
 
       <Reveal className="desktop-preview" delay={0.1}>
