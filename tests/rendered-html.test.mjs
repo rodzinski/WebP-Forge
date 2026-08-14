@@ -44,6 +44,18 @@ test("synchronizes the current version and changelog with GitHub releases", asyn
   assert.doesNotMatch(download, /versão 1\.\d+\.\d+/);
 });
 
+test("publishes educational guides for supported image formats", async () => {
+  const [formats, index, detail] = await Promise.all([
+    readFile(new URL("../lib/image-formats.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/formats/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/formats/[slug]/page.tsx", import.meta.url), "utf8"),
+  ]);
+  for (const format of ["webp", "avif", "png", "jpg", "gif", "ico"]) assert.match(formats, new RegExp(`slug: "${format}"`));
+  assert.match(index, /<FormatComparison \/>/);
+  assert.match(detail, /generateStaticParams/);
+  assert.match(detail, /Converter imagens/);
+});
+
 test("publishes a complete privacy policy and links it from the footer", async () => {
   const [privacy, footer] = await Promise.all([
     readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),
