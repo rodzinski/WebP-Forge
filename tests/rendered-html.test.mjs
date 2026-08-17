@@ -85,6 +85,23 @@ test("offers a privacy-conscious feedback channel", async () => {
   assert.match(footer, /Enviar feedback/);
 });
 
+test("publishes a public roadmap connected to feedback and changelog", async () => {
+  const [page, board, header, footer] = await Promise.all([
+    readFile(new URL("../app/roadmap/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/roadmap/roadmap-board.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/site-header.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/site-footer.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /prioridades, não promessas de data/);
+  assert.match(page, /href="\/changelog"/);
+  assert.match(page, /href="\/feedback"/);
+  assert.match(board, /Entregue/);
+  assert.match(board, /Em andamento/);
+  assert.match(board, /Explorando/);
+  assert.match(header, /\/roadmap/);
+  assert.match(footer, /Roadmap/);
+});
+
 test("publishes a complete privacy policy and links it from the footer", async () => {
   const [privacy, footer] = await Promise.all([
     readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),

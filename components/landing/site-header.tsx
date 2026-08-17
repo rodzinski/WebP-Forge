@@ -9,6 +9,7 @@ const navigation = [
   { href: "/#windows", label: "Windows" },
   { href: "/formats", label: "Guias" },
   { href: "/changelog", label: "Changelog" },
+  { href: "/roadmap", label: "Roadmap" },
   { href: "/feedback", label: "Feedback" },
   { href: "/#faq", label: "FAQ" },
 ];
