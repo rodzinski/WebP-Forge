@@ -56,6 +56,21 @@ test("publishes educational guides for supported image formats", async () => {
   assert.match(detail, /Converter imagens/);
 });
 
+test("loads privacy-friendly analytics only after explicit consent", async () => {
+  const [consent, layout, privacy] = await Promise.all([
+    readFile(new URL("../components/analytics/analytics-consent.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(consent, /NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN/);
+  assert.match(consent, /consent === "granted"/);
+  assert.match(consent, /static\.cloudflareinsights\.com\/beacon\.min\.js/);
+  assert.match(consent, /Nenhuma imagem, nome de arquivo ou histórico é enviado/);
+  assert.match(layout, /<AnalyticsConsent \/>/);
+  assert.doesNotMatch(layout, /cloudflareinsights/);
+  assert.match(privacy, /somente após consentimento explícito/);
+});
+
 test("publishes a complete privacy policy and links it from the footer", async () => {
   const [privacy, footer] = await Promise.all([
     readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),

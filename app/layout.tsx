@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Space_Grotesk } from "next/font/google";
 import { headers } from "next/headers";
+import { AnalyticsConsent } from "@/components/analytics/analytics-consent";
 import "./globals.css";
 
 const bodyFont = Manrope({ variable: "--font-body", subsets: ["latin"] });
@@ -27,5 +28,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="pt-BR"><body className={`${bodyFont.variable} ${displayFont.variable}`}>{children}</body></html>;
+  return <html lang="pt-BR"><body className={`${bodyFont.variable} ${displayFont.variable}`}>{children}<AnalyticsConsent /></body></html>;
 }

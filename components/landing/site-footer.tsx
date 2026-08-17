@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/brand-mark";
 import { ReleaseVersion } from "@/components/release-version";
+import { AnalyticsPreferencesButton } from "@/components/analytics/analytics-preferences-button";
 
 export function SiteFooter() {
   return (
@@ -28,6 +29,7 @@ export function SiteFooter() {
             <strong>Informações</strong>
             <Link href="/#faq">FAQ</Link>
             <Link href="/privacy">Política de Privacidade</Link>
+            <AnalyticsPreferencesButton />
             <span>Aplicativo <ReleaseVersion /></span>
           </div>
         </div>
