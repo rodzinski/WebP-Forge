@@ -71,6 +71,20 @@ test("loads privacy-friendly analytics only after explicit consent", async () =>
   assert.match(privacy, /somente após consentimento explícito/);
 });
 
+test("offers a privacy-conscious feedback channel", async () => {
+  const [page, form, header, footer] = await Promise.all([
+    readFile(new URL("../app/feedback/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/feedback/feedback-form.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/site-header.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/site-footer.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /Sua experiência/);
+  assert.match(form, /github\.com\/rodzinski\/WebP-Forge\/issues\/new/);
+  assert.match(form, /Nenhuma imagem é anexada/);
+  assert.match(header, /\/feedback/);
+  assert.match(footer, /Enviar feedback/);
+});
+
 test("publishes a complete privacy policy and links it from the footer", async () => {
   const [privacy, footer] = await Promise.all([
     readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),

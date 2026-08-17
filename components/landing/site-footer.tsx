@@ -29,6 +29,7 @@ export function SiteFooter() {
             <strong>Informações</strong>
             <Link href="/#faq">FAQ</Link>
             <Link href="/privacy">Política de Privacidade</Link>
+            <Link href="/feedback">Enviar feedback</Link>
             <AnalyticsPreferencesButton />
             <span>Aplicativo <ReleaseVersion /></span>
           </div>
