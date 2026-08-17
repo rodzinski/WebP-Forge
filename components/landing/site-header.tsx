@@ -11,6 +11,7 @@ const navigation = [
   { href: "/changelog", label: "Changelog" },
   { href: "/roadmap", label: "Roadmap" },
   { href: "/feedback", label: "Feedback" },
+  { href: "/support", label: "Apoie" },
   { href: "/#faq", label: "FAQ" },
 ];
 

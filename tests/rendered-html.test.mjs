@@ -102,6 +102,22 @@ test("publishes a public roadmap connected to feedback and changelog", async () 
   assert.match(footer, /Roadmap/);
 });
 
+test("offers transparent community support with an optional financial channel", async () => {
+  const [page, docs, header, footer] = await Promise.all([
+    readFile(new URL("../app/support/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../docs/SUPPORT.md", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/site-header.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/site-footer.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /NEXT_PUBLIC_SUPPORT_URL/);
+  assert.match(page, /github\.com\/sponsors\/rodzinski/);
+  assert.match(page, /Apoiar pelo GitHub Sponsors/);
+  assert.match(page, /github\.com\/rodzinski\/WebP-Forge/);
+  assert.match(docs, /Nunca coloque chaves Pix privadas/);
+  assert.match(header, /\/support/);
+  assert.match(footer, /Apoie o projeto/);
+});
+
 test("publishes a complete privacy policy and links it from the footer", async () => {
   const [privacy, footer] = await Promise.all([
     readFile(new URL("../app/privacy/page.tsx", import.meta.url), "utf8"),
