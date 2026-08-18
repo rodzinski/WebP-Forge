@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowUpRight, CheckCircle2, MessageSquareText, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SelectField } from "@/components/ui/select-field";
 
 const categories = [
   { value: "enhancement", label: "Sugestão" },
@@ -43,7 +44,7 @@ export function FeedbackForm() {
 
     <section className="feedback-form" aria-labelledby="feedback-form-title">
       <header><MessageSquareText className="size-5" /><div><span>CANAL DE FEEDBACK</span><h2 id="feedback-form-title">Conte o que podemos melhorar.</h2></div></header>
-      <label>Tipo de feedback<select value={category} onChange={(event) => setCategory(event.target.value as typeof category)}>{categories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
+      <SelectField label="Tipo de feedback" options={categories} value={category} onChange={setCategory} />
       <label>Título<input value={title} onChange={(event) => setTitle(event.target.value)} maxLength={120} placeholder="Resuma sua ideia ou problema" /></label>
       <label>Mensagem<textarea value={message} onChange={(event) => setMessage(event.target.value)} maxLength={4000} placeholder="Conte o que aconteceu ou como podemos melhorar…" /></label>
       <label className="feedback-checkbox"><input type="checkbox" checked={includeBrowser} onChange={(event) => setIncludeBrowser(event.target.checked)} /><span>Incluir navegador e endereço do site</span></label>

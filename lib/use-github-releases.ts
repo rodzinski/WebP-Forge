@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { type GitHubRelease, parseReleases, releasesApiUrl } from "@/lib/github-releases";
 
-const cacheKey = "webp-forge-public-releases-v1";
+const cacheKey = "webp-forge-public-releases-v2";
 const cacheDuration = 60 * 60 * 1000;
 let request: Promise<GitHubRelease[]> | undefined;
 

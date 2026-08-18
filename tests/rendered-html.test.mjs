@@ -39,6 +39,7 @@ test("synchronizes the current version and changelog with GitHub releases", asyn
   ]);
   assert.match(source, /api\.github\.com\/repos\/rodzinski\/WebP-Forge\/releases/);
   assert.match(source, /replace\(\/\^v\\\.\/i, "v"\)/);
+  assert.match(source, /sort\(\(left, right\) => publishedAtTimestamp\(right\) - publishedAtTimestamp\(left\)\)/);
   assert.match(changelog, /<ReleaseList \/>/);
   assert.match(download, /<ReleaseVersion \/>/);
   assert.doesNotMatch(download, /versão 1\.\d+\.\d+/);
@@ -81,6 +82,7 @@ test("offers a privacy-conscious feedback channel", async () => {
   assert.match(page, /Sua experiência/);
   assert.match(form, /github\.com\/rodzinski\/WebP-Forge\/issues\/new/);
   assert.match(form, /Nenhuma imagem é anexada/);
+  assert.match(form, /<SelectField/);
   assert.match(header, /\/feedback/);
   assert.match(footer, /Enviar feedback/);
 });
@@ -98,6 +100,8 @@ test("publishes a public roadmap connected to feedback and changelog", async () 
   assert.match(board, /Entregue/);
   assert.match(board, /Em andamento/);
   assert.match(board, /Explorando/);
+  assert.match(board, /Aplicativo certificado, assinado e disponível oficialmente na Store/);
+  assert.match(board, /GitHub Sponsors disponível/);
   assert.match(header, /\/roadmap/);
   assert.match(footer, /Roadmap/);
 });
@@ -113,6 +117,7 @@ test("offers transparent community support with an optional financial channel", 
   assert.match(page, /github\.com\/sponsors\/rodzinski/);
   assert.match(page, /Apoiar pelo GitHub Sponsors/);
   assert.match(page, /github\.com\/rodzinski\/WebP-Forge/);
+  assert.doesNotMatch(page, /\/stargazers/);
   assert.match(docs, /Nunca coloque chaves Pix privadas/);
   assert.match(header, /\/support/);
   assert.match(footer, /Apoie o projeto/);

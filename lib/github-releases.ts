@@ -19,6 +19,11 @@ type GitHubReleaseResponse = {
 export const releasesUrl = "https://github.com/rodzinski/WebP-Forge/releases";
 export const releasesApiUrl = "https://api.github.com/repos/rodzinski/WebP-Forge/releases?per_page=10";
 
+function publishedAtTimestamp(release: GitHubRelease): number {
+  const timestamp = Date.parse(release.publishedAt);
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
 export function parseReleases(value: unknown): GitHubRelease[] {
   if (!Array.isArray(value)) return [];
   return value.flatMap((entry: unknown) => {
@@ -32,5 +37,5 @@ export function parseReleases(value: unknown): GitHubRelease[] {
       publishedAt: typeof item.published_at === "string" ? item.published_at : "",
       url: item.html_url,
     }];
-  });
+  }).sort((left, right) => publishedAtTimestamp(right) - publishedAtTimestamp(left));
 }

@@ -11,6 +11,8 @@ const columns = [
       { title: "Experiência para grandes lotes", detail: "Fila virtualizada, concorrência adaptativa, relatórios e histórico local." },
       { title: "Windows para mais dispositivos", detail: "Versões portátil, instalável, x64 e ARM64." },
       { title: "Produto aberto à comunidade", detail: "Changelog, analytics opcional, guias e canal de feedback." },
+      { title: "Distribuição pela Microsoft Store", detail: "Aplicativo certificado, assinado e disponível oficialmente na Store.", icon: Store },
+      { title: "Apoio ao projeto", detail: "GitHub Sponsors disponível para contribuições opcionais sem limitar os recursos gratuitos.", icon: HeartHandshake },
     ],
   },
   {
@@ -19,7 +21,6 @@ const columns = [
     icon: CircleDot,
     description: "Trabalho ativo e validações externas.",
     items: [
-      { title: "Distribuição pela Microsoft Store", detail: "Pacote enviado e em processo de certificação.", icon: Store },
       { title: "Consistência visual", detail: "Revisão ampla de estilos, estados, temas e acessibilidade.", icon: Palette },
     ],
   },
@@ -31,7 +32,7 @@ const columns = [
     items: [
       { title: "Suporte a PDF", detail: "Importação e conversão de páginas com controles de qualidade.", icon: FileText },
       { title: "API e SDK", detail: "Motor de conversão acessível a outros produtos e desenvolvedores.", icon: Code2 },
-      { title: "Apoio ao projeto", detail: "Patrocínio ou doações sem limitar os recursos gratuitos.", icon: HeartHandshake },
+      { title: "Exportação de histórico", detail: "Relatórios de conversão reutilizáveis em formatos como CSV e JSON.", icon: FileText },
     ],
   },
 ] as const;

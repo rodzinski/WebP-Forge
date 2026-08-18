@@ -242,6 +242,14 @@ h1 em { color: var(--muted); font-style: normal; }
 .feedback-form input:not([type="checkbox"]), .feedback-form select, .feedback-form textarea { width: 100%; border: 1px solid #d8dcd5; border-radius: 12px; background: white; color: #171a17; outline: none; transition: border-color .18s, box-shadow .18s; }
 .feedback-form input:not([type="checkbox"]), .feedback-form select { height: 44px; padding: 0 13px; }.feedback-form textarea { min-height: 130px; padding: 12px 13px; resize: vertical; }
 .feedback-form input:focus, .feedback-form select:focus, .feedback-form textarea:focus { border-color: #96c51e; box-shadow: 0 0 0 3px rgba(174,234,38,.18); }
+.select-field { position: relative; display: grid; gap: 7px; }
+.select-field-label { color: #646a61; font-size: 9px; font-weight: 700; }
+.select-field-trigger { width: 100%; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 13px; border: 1px solid #d8dcd5; border-radius: 12px; background: white; color: #171a17; cursor: pointer; outline: none; transition: border-color .18s, box-shadow .18s, background .18s; }
+.select-field-trigger:hover, .select-field-trigger[aria-expanded="true"] { border-color: #96c51e; box-shadow: 0 0 0 3px rgba(174,234,38,.14), inset 0 0 20px rgba(190,244,57,.05); }
+.select-field-trigger svg { color: #778071; transition: transform .18s; }.select-field-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+.select-field-menu { position: absolute; z-index: 20; top: calc(100% + 7px); left: 0; right: 0; display: grid; gap: 3px; padding: 6px; border: 1px solid #cbd1c7; border-radius: 14px; background: rgba(255,255,255,.97); box-shadow: 0 18px 45px rgba(27,37,24,.16); backdrop-filter: blur(18px); }
+.select-field-menu button { min-height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: #252b24; cursor: pointer; text-align: left; transition: border-color .15s, background .15s; }
+.select-field-menu button:hover, .select-field-menu button.is-active { border-color: rgba(151,198,30,.45); background: linear-gradient(100deg, rgba(193,244,64,.15), rgba(193,244,64,.04)); }.select-field-menu button svg { color: #6d9417; }
 .feedback-form .feedback-checkbox { display: flex; grid-template-columns: none; flex-direction: row; align-items: center; gap: 9px; color: #555b52; cursor: pointer; }.feedback-checkbox input { accent-color: #8fbf19; }
 .feedback-error { margin: -4px 0 0; color: #b42318; font-size: 10px; }.feedback-form > .button { justify-self: end; }
 .roadmap-page { min-height: 100vh; background: var(--landing-bg); color: var(--landing-ink); }
