@@ -24,11 +24,17 @@ test("keeps image conversion on the device", async () => {
   assert.match(output, /import\("@jsquash\/avif\/encode\.js"\)/);
 });
 
-test("offers portable, installer and ARM64 Windows downloads", async () => {
-  const download = await readFile(new URL("../components/landing/desktop-download.tsx", import.meta.url), "utf8");
-  assert.match(download, /WebP-Forge-win-x64\.zip/);
+test("uses the installer as the primary x64 Windows download", async () => {
+  const [download, hero] = await Promise.all([
+    readFile(new URL("../components/landing/desktop-download.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/landing/hero.tsx", import.meta.url), "utf8"),
+  ]);
   assert.match(download, /WebP-Forge-Setup-win-x64\.exe/);
+  assert.match(hero, /WebP-Forge-Setup-win-x64\.exe/);
+  assert.doesNotMatch(download, /WebP-Forge-win-x64\.zip/);
+  assert.doesNotMatch(hero, /WebP-Forge-win-x64\.zip/);
   assert.match(download, /WebP-Forge-portable-win-arm64\.zip/);
+  assert.match(download, /apps\.microsoft\.com\/detail\/9PB469QFGKR7/);
 });
 
 test("synchronizes the current version and changelog with GitHub releases", async () => {
