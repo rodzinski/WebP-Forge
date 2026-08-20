@@ -9,6 +9,7 @@ const columns = [
     items: [
       { title: "Conversão multiformato", detail: "WebP, AVIF, PNG, JPG e ICO no desktop e na web." },
       { title: "Experiência para grandes lotes", detail: "Fila virtualizada, concorrência adaptativa, relatórios e histórico local." },
+      { title: "Exportação de histórico", detail: "Relatórios locais em PDF, XLSX e CSV no aplicativo Windows.", icon: FileText },
       { title: "Windows para mais dispositivos", detail: "Versões portátil, instalável, x64 e ARM64." },
       { title: "Produto aberto à comunidade", detail: "Changelog, analytics opcional, guias e canal de feedback." },
       { title: "Distribuição pela Microsoft Store", detail: "Aplicativo certificado, assinado e disponível oficialmente na Store.", icon: Store },
@@ -32,7 +33,6 @@ const columns = [
     items: [
       { title: "Suporte a PDF", detail: "Importação e conversão de páginas com controles de qualidade.", icon: FileText },
       { title: "API e SDK", detail: "Motor de conversão acessível a outros produtos e desenvolvedores.", icon: Code2 },
-      { title: "Exportação de histórico", detail: "Relatórios de conversão reutilizáveis em formatos como CSV e JSON.", icon: FileText },
     ],
   },
 ] as const;

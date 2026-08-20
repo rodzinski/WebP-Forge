@@ -39,6 +39,7 @@ O arquivo não é apenas renomeado: seus pixels são decodificados, redimensiona
 | Instalação necessária | Não | Sim |
 | Drag and drop | ✓ | ✓ |
 | Histórico local | ✓ | ✓ |
+| Exportação do histórico em PDF, XLSX e CSV | — | ✓ |
 | Perfis personalizados | ✓ | ✓ |
 | Integração “Abrir com” | — | ✓ |
 | Distribuição pela Microsoft Store | — | ✓ |
@@ -56,7 +57,7 @@ O arquivo não é apenas renomeado: seus pixels são decodificados, redimensiona
 - Download individual ou de todo o lote em ZIP.
 - Perfis personalizados armazenados localmente.
 - Reordenação, cancelamento individual e repetição somente das falhas.
-- Histórico e relatório detalhado por arquivo.
+- Histórico, relatório detalhado por arquivo e exportação em PDF, XLSX e CSV no Windows.
 - Web Worker, lista virtualizada e concorrência adaptativa para lotes grandes.
 - Temas claro, escuro e automático.
 - Interface em português, inglês e espanhol.
