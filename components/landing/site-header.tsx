@@ -9,6 +9,9 @@ const navigation = [
   { href: "/#windows", label: "Windows" },
   { href: "/formats", label: "Guias" },
   { href: "/changelog", label: "Changelog" },
+];
+
+const secondaryNavigation = [
   { href: "/roadmap", label: "Roadmap" },
   { href: "/feedback", label: "Feedback" },
   { href: "/support", label: "Apoie" },
@@ -22,7 +25,17 @@ export function SiteHeader() {
         <BrandMark size={34} priority />
         <span>WebP Forge</span>
       </Link>
-      <nav aria-label="Navegação principal">{navigation.map((item) => <Link href={item.href} key={item.href}>{item.label}</Link>)}</nav>
+      <nav aria-label="Navegação principal">
+        {navigation.map((item) => <Link href={item.href} key={item.href}>{item.label}</Link>)}
+        <details className="site-more">
+          <summary>Mais</summary>
+          <div>
+            <Link className="site-more-mobile" href="/formats">Guias</Link>
+            <Link className="site-more-mobile" href="/changelog">Changelog</Link>
+            {secondaryNavigation.map((item) => <Link href={item.href} key={item.href}>{item.label}</Link>)}
+          </div>
+        </details>
+      </nav>
       <Button asChild size="sm" variant="primary"><Link href="/app">Abrir conversor <ArrowUpRight className="size-3.5" /></Link></Button>
     </header>
   );

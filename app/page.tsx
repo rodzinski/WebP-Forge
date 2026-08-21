@@ -10,6 +10,7 @@ import { Pricing } from "@/components/landing/pricing";
 import { Faq } from "@/components/landing/faq";
 import { FinalCta } from "@/components/landing/final-cta";
 import { SiteFooter } from "@/components/landing/site-footer";
+import { AmbientBackdrop } from "@/components/landing/ambient-backdrop";
 
 const InteractiveDemo = dynamic(() => import("@/components/landing/interactive-demo"), {
   loading: () => <div className="demo-loading" aria-hidden="true" />,
@@ -18,6 +19,7 @@ const InteractiveDemo = dynamic(() => import("@/components/landing/interactive-d
 export default function HomePage() {
   return (
     <main className="landing-page">
+      <AmbientBackdrop />
       <SiteHeader />
       <Hero />
       <ProofStrip />

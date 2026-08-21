@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Map } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { AmbientBackdrop } from "@/components/landing/ambient-backdrop";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { RoadmapBoard } from "@/components/roadmap/roadmap-board";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 
 export default function RoadmapPage() {
   return <main className="roadmap-page">
+    <AmbientBackdrop subtle />
     <header className="legal-header">
       <Link href="/" className="site-brand"><BrandMark size={34} priority /><span>WebP Forge</span></Link>
       <Button asChild size="sm" variant="ghost"><Link href="/"><ArrowLeft className="size-3.5" />Voltar ao site</Link></Button>

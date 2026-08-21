@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Code2, Heart, MessageCircleHeart, Share2, Star } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { AmbientBackdrop } from "@/components/landing/ambient-backdrop";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { Button } from "@/components/ui/button";
 
@@ -12,6 +13,7 @@ const defaultFinancialSupportUrl = "https://github.com/sponsors/rodzinski";
 export default function SupportPage() {
   const financialSupportUrl = process.env.NEXT_PUBLIC_SUPPORT_URL?.trim() || defaultFinancialSupportUrl;
   return <main className="support-page">
+    <AmbientBackdrop subtle />
     <header className="legal-header"><Link href="/" className="site-brand"><BrandMark size={34} priority /><span>WebP Forge</span></Link><Button asChild size="sm" variant="ghost"><Link href="/"><ArrowLeft className="size-3.5" />Voltar ao site</Link></Button></header>
     <section className="support-hero"><span className="section-kicker"><Heart className="size-3.5" /> APOIE O FORGE</span><h1>Gratuito por escolha.<br /><em>Melhor com a comunidade.</em></h1><p>Seu apoio ajuda a manter o conversor privado, sem publicidade e acessível para todos.</p></section>
     <section className="support-grid">

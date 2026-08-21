@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, HardDrive, Mail, ShieldCheck } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { AmbientBackdrop } from "@/components/landing/ambient-backdrop";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { Button } from "@/components/ui/button";
 
@@ -15,6 +16,7 @@ const effectiveDate = "14 de agosto de 2026";
 export default function PrivacyPage() {
   return (
     <main className="legal-page">
+      <AmbientBackdrop subtle />
       <header className="legal-header">
         <Link href="/" className="site-brand" aria-label="WebP Forge — Página inicial">
           <BrandMark size={34} priority />
