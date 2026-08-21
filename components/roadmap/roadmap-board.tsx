@@ -1,4 +1,4 @@
-import { Check, CircleDot, Clock3, Code2, FileText, HeartHandshake, Palette, Store } from "lucide-react";
+import { Check, CircleDot, Clock3, Code2, FileText, HeartHandshake, PackageCheck, Palette, Store } from "lucide-react";
 
 const columns = [
   {
@@ -11,6 +11,7 @@ const columns = [
       { title: "Experiência para grandes lotes", detail: "Fila virtualizada, concorrência adaptativa, relatórios e histórico local." },
       { title: "Exportação de histórico", detail: "Relatórios locais em PDF, XLSX e CSV no aplicativo Windows.", icon: FileText },
       { title: "Windows para mais dispositivos", detail: "Versões portátil, instalável, x64 e ARM64." },
+      { title: "Atualizações pelo instalador", detail: "Detecção da versão existente com opções para atualizar ou desinstalar.", icon: PackageCheck },
       { title: "Produto aberto à comunidade", detail: "Changelog, analytics opcional, guias e canal de feedback." },
       { title: "Distribuição pela Microsoft Store", detail: "Aplicativo certificado, assinado e disponível oficialmente na Store.", icon: Store },
       { title: "Apoio ao projeto", detail: "GitHub Sponsors disponível para contribuições opcionais sem limitar os recursos gratuitos.", icon: HeartHandshake },
