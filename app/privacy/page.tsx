@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, HardDrive, ShieldCheck } from "lucide-react";
+import { ArrowLeft, HardDrive, Mail, ShieldCheck } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { Button } from "@/components/ui/button";
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           <section><span>05</span><div><h2>Site, infraestrutura e terceiros</h2><p>Não utilizamos contas de usuário ou publicidade. Como em qualquer site, o provedor de hospedagem e segurança pode processar dados técnicos transitórios — como endereço IP, navegador, data, hora e registros de segurança — para entregar e proteger o serviço.</p><p>O site e as métricas opcionais são fornecidos pela Cloudflare. Links para downloads e código-fonte podem direcionar ao GitHub. Quando a verificação de atualizações é solicitada manualmente ou ativada nas configurações do aplicativo Windows, o WebP Forge consulta a API pública do GitHub somente para obter os dados da versão mais recente. Imagens, histórico e configurações não são enviados nessa consulta. Ao acessar esses serviços, aplicam-se também as políticas de privacidade dos respectivos provedores.</p></div></section>
           <section><span>06</span><div><h2>Metadados das imagens</h2><p>Dependendo das configurações e do formato escolhido, a conversão pode preservar, remover ou limitar metadados incorporados, incluindo EXIF. O resultado exibido e salvo respeita a opção selecionada pelo usuário. Nenhum metadado é enviado ao WebP Forge.</p></div></section>
           <section><span>07</span><div><h2>Controle e direitos do usuário</h2><p>Você pode revogar o consentimento de analytics pelo rodapé, limpar o histórico pelo produto, remover dados locais nas configurações do navegador, excluir arquivos gerados e desinstalar o aplicativo a qualquer momento. Como não mantemos contas nem um banco de dados de imagens, normalmente não possuímos imagens ou histórico remoto para localizar ou excluir.</p></div></section>
-          <section><span>08</span><div><h2>Alterações e contato</h2><p>Esta política poderá ser atualizada quando o produto ou seus serviços mudarem. A data de vigência será atualizada nesta página. Dúvidas de privacidade e solicitações podem ser enviadas pelo canal público de suporte do projeto.</p><Button asChild variant="outline" size="sm"><a href="https://github.com/rodzinski/WebP-Forge/issues" target="_blank" rel="noreferrer">Abrir canal de suporte <ExternalLink className="size-3.5" /></a></Button></div></section>
+          <section><span>08</span><div><h2>Alterações e contato</h2><p>Esta política poderá ser atualizada quando o produto ou seus serviços mudarem. A data de vigência será atualizada nesta página. Dúvidas de privacidade e solicitações podem ser enviadas para o contato oficial do projeto.</p><Button asChild variant="outline" size="sm"><a href="mailto:webpforge@gmail.com">webpforge@gmail.com <Mail className="size-3.5" /></a></Button></div></section>
         </article>
       </div>
 

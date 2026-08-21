@@ -186,6 +186,8 @@ Cada push para `main` inicia uma nova publicação automaticamente.
 
 Para problemas comuns, utilize o [canal de feedback](https://webp-forge-web.arodzinskicb.workers.dev/feedback). Para uma possível vulnerabilidade, abra inicialmente uma discussão sem publicar detalhes exploráveis.
 
+Contato oficial: [webpforge@gmail.com](mailto:webpforge@gmail.com).
+
 ## Produto e comunidade
 
 - Consulte o [roadmap público](https://webp-forge-web.arodzinskicb.workers.dev/roadmap).
